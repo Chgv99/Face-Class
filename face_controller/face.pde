@@ -29,7 +29,7 @@ boolean debug, outlines, smooth;
 //FILTER STATE
 int filter;
 
-class PlayerFace{
+class Face{
   
   Point[] contour = new Point[27];
   
@@ -59,7 +59,7 @@ class PlayerFace{
   private float left_offset;
   private float right_offset;
   
-  public PlayerFace(PApplet parent, float upper_offset, float lower_offset,  float left_offset, float right_offset){
+  public Face(PApplet parent, float upper_offset, float lower_offset,  float left_offset, float right_offset){
     //Cámara
     cam = null;
     while (cam == null) {
@@ -79,7 +79,7 @@ class PlayerFace{
     faceFile = "haarcascade_frontalface_default.xml";
     //Modelo de máscara
     modelFile = "face_landmark_model.dat";
-    fm = Face.createFacemarkKazemi();
+    fm = org.opencv.face.Face.createFacemarkKazemi();
     fm.loadModel(dataPath(modelFile));
     
     for (int i = 0; i < 27; i++){
@@ -190,7 +190,7 @@ class PlayerFace{
     CVImage im = new CVImage(i.width, i.height);
     im.copyTo(i);
     MatOfRect faces = new MatOfRect();
-    Face.getFacesHAAR(im.getBGR(), faces, dataPath(faceFile)); 
+    org.opencv.face.Face.getFacesHAAR(im.getBGR(), faces, dataPath(faceFile)); 
     if (!faces.empty()) {
       fm.fit(im.getBGR(), faces, shapes);
     }
