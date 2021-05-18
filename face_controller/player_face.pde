@@ -12,8 +12,7 @@ import java.nio.*;
 import org.opencv.core.Mat;
 import org.opencv.core.CvType;
 
-Capture cam;
-CVImage img;
+
 
 //Detectores
 CascadeClassifier face;
@@ -32,7 +31,16 @@ int filter;
 
 class PlayerFace{
   
-  Point[] points;
+  Point[] contour = new Point[27];
+  
+  private Capture cam;
+  private CVImage img;
+  
+  PGraphics maskImage;
+  
+  //FACE
+  Point v1, v2, v3, v4;  //Face vertices
+  Point center;
   
   //EYES
   PImage left_eye, right_eye;
@@ -46,15 +54,19 @@ class PlayerFace{
   private float mouth_amplitude;
   private float mouth_threshold;
   
-  public PlayerFace(PApplet parent){
-    //size(640, 480);
+  private float upper_offset;
+  private float lower_offset;
+  private float left_offset;
+  private float right_offset;
+  
+  public PlayerFace(PApplet parent, float upper_offset, float lower_offset,  float left_offset, float right_offset){
     //Cámara
     cam = null;
     while (cam == null) {
       //cam = new Capture(this, width , height-60, "");
       cam = new Capture(parent, width , height, "DroidCam Source 3");
+      //cam = new Capture(parent, width , height);
     }
-    
     cam.start(); 
     
     //OpenCV
@@ -69,9 +81,19 @@ class PlayerFace{
     modelFile = "face_landmark_model.dat";
     fm = Face.createFacemarkKazemi();
     fm.loadModel(dataPath(modelFile));
+    
+    for (int i = 0; i < 27; i++){
+      contour[i] = new Point(0,0);
+    }
+    
+    //Variables
+    this.upper_offset = upper_offset;
+    this.lower_offset = lower_offset;
+    this.left_offset = left_offset;
+    this.right_offset = right_offset;
   }
   
-  private void Process(){
+  private void Process(boolean display){
     if (cam.available()) {
       background(0);
       cam.read();
@@ -87,7 +109,7 @@ class PlayerFace{
       mouth_amplitude = distance(mouth_max_x, mouth_max_y, mouth_min_x, mouth_min_y) / face_distance_units;
       
       //Imagen de entrada
-      //image(img,0,0);
+      if (display) image(img,0,0);
       
       pushStyle();
       //rect(0, height-40, width, 40);
@@ -102,12 +124,13 @@ class PlayerFace{
       if (debug) {
         pushStyle();
         fill(0,0,0,127);
-        rect(10, 10, 250, 35); //aumentar de 15 en 15?
+        rect(10, 10, 250, 50); //aumentar de 15 en 15?
         popStyle();
         textAlign(LEFT);
         textSize(10);
         text("Face Distance: " + nf(face_distance_cm,0,2) + " cm (" + nf(face_distance_units,0,2) + " units)" ,15, 25);
-        text("Mouth Amplitude: " + mouth_amplitude, 15, 40);
+        text("Face Center: " + nf((float)center.x,0,2) + ", " + nf((float)center.y,0,2), 15, 40);
+        text("Mouth Amplitude: " + mouth_amplitude, 15, 55);
       }
       
       //Detección de puntos fiduciales
@@ -130,8 +153,32 @@ class PlayerFace{
     return face_distance_cm;
   }
   
+  public Point GetCenter(){
+    return center;
+  }
+  
   public boolean MouthIsOpen(){
     return mouth_amplitude > 0.5f;
+  }
+  
+  public void GetCrop(int x, int y){
+    maskImage = createGraphics(width,height);
+    maskImage.beginDraw();
+    //maskImage.triangle(30, 480, 256, 30, 480, 480);
+    maskImage.beginShape();
+    //int i = 0;
+    for(Point p : contour){
+      //print(i);
+      maskImage.vertex((float)p.x, (float)p.y);
+      //i++;
+    }
+    
+    maskImage.endShape(CLOSE);
+    maskImage.endDraw();
+    // apply mask
+    img.mask(maskImage);
+    //smoothenEdges(img);
+    image(img, x - (float)center.x, y - (float)center.y);
   }
   
   private float distance(int x_1, int y_1, int x_2, int y_2){
@@ -157,8 +204,12 @@ class PlayerFace{
     noFill();
     face_shape = createShape();
     face_shape.beginShape();
-    int i = 0;
-    for (Point pt : p) {
+  
+    Point max = new Point(0,0);
+    Point min = new Point(width,height);
+    
+    for (int i = 0; i < p.length; i++) {
+      Point pt = p[i];
       face_shape.vertex((float)pt.x+o.x, (float)pt.y+o.y);
       //ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
       if (i == 42) {
@@ -175,12 +226,25 @@ class PlayerFace{
       } else if (i == 18) {
         stroke(0,255,0);
         if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
-        eyeb_y = (int)(pt.y+o.y);
+        v1 = new Point(pt.x+o.x,pt.y+o.y);
+        //(int)(pt.y+o.y);
       /*} else if (i == 48) {
         stroke(255,0,0);
         if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
         mouth_x = (int)(pt.x+o.x);
         mouth_y = (int)(pt.y+o.y);*/
+      } else if (i == 25) {
+        stroke(0,255,0);
+        if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
+        v2 = new Point(pt.x+o.x,pt.y+o.y);
+      } else if (i == 5) {
+        stroke(0,255,0);
+        if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
+        v3 = new Point(pt.x+o.x,pt.y+o.y);
+      } else if (i == 11) {
+        stroke(0,255,0);
+        if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
+        v4 = new Point(pt.x+o.x,pt.y+o.y);
       } else if (i == 50) {
         stroke(255,255,0);
         if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
@@ -195,9 +259,84 @@ class PlayerFace{
         stroke(255);
         if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 1, 1);
       }
-      i++;
+      
+      if ((pt.x+o.x) > max.x) max.x = (float)(pt.x+o.x);
+      if ((pt.y+o.y) > max.y) max.y = (float)(pt.y+o.y);
+      if ((pt.x+o.x) < min.x) min.x = (float)(pt.x+o.x);
+      if ((pt.y+o.y) < min.y) min.y = (float)(pt.y+o.y);
+    }
+    
+    for(int i = 0; i < 17; i++){
+      contour[i] = new Point(p[i].x+o.x, p[i].y+o.y);
+      stroke(255,0,255);
+      ellipse((float)p[i].x+o.x, (float)p[i].y+o.y, 8, 8);
+    }
+    
+    int j = 17;
+    for (int i = 26; i >= 17; i--){
+      contour[j] = new Point(p[i].x+o.x, p[i].y+o.y - (face_distance_units * upper_offset));
+      stroke(0,0,0);
+      ellipse((float)p[i].x+o.x, (float)p[i].y+o.y - (face_distance_units * upper_offset), 5, 5);
+      stroke(255,0,255);
+      ellipse((float)p[i].x+o.x, (float)p[i].y+o.y, 8, 8);
+      j++;
+      
     }
     face_shape.endShape(CLOSE);
     popStyle();
+    
+    pushStyle();
+    stroke(200,127,0);
+    noFill();
+    ellipse((float)max.x, (float)max.y, 10, 10);
+    stroke(0,127,200);
+    ellipse((float)min.x, (float)min.y, 10, 10);
+    popStyle();
+    pushStyle();
+    fill(0,255,0);
+    stroke(0,255,0);
+    line((float)max.x, (float)max.y, (float)min.x, (float)min.y);
+    int d = (int) distance((int)max.x, (int)max.y, (int)min.x, (int)min.y);
+    center = new Point(min.x + ((max.x - min.x) / 2), min.y + ((max.y - min.y) / 2));//new Point(min.x + d/2, min.y + d/2);
+    ellipse((float)center.x, (float)center.y, 3, 3);
+    popStyle();
+  }
+  
+  private void smoothenEdges(PImage img){
+    //Mat mat = toMat(img);
+    //Columna
+    for (int i = 0; i < img.width; i++){
+      //Fila
+      for (int j = 0; j < img.height; j++){
+        int loc = i + j * img.width;
+        /*img.pixels[loc] = color(red(img.get(i,j)),
+                                green(img.get(i,j)),
+                                blue(img.get(i,j)),
+                                //map(min(i,j), 
+                                //    0, 
+                                //    (face_d*1.75)/3, 
+                                //    0, 
+                                //    255)
+                                i*j
+                                );*/
+          if (i <= img.width/2 && j <= img.height/2) {
+            //Superior izquierdo //1.5
+            img.pixels[loc] = color(red(img.get(i,j)),green(img.get(i,j)),blue(img.get(i,j)),i*j);
+          } else if (i > img.width/2 && j <= img.height/2) {
+            //Superior derecho
+            img.pixels[loc] = color(red(img.get(i,j)),green(img.get(i,j)),blue(img.get(i,j)),(img.width-i)*j*(50f/face_distance_units));
+            //img.pixels[loc] = color(255,0,0);
+          } else if (i > img.width/2 && j > img.height/2) {
+            //Inferior derecho
+            img.pixels[loc] = color(red(img.get(i,j)),green(img.get(i,j)),blue(img.get(i,j)),(img.width-i)*(img.height-j)*(50f/face_distance_units));
+          } else if (i <= img.width/2 && j > img.height/2) {
+            //Inferior izquierdo
+            img.pixels[loc] = color(red(img.get(i,j)),green(img.get(i,j)),blue(img.get(i,j)),i*(img.height-j)*(50f/face_distance_units));
+          }
+          
+      }
+    }
+    img.updatePixels();
+    //return img;
   }
 }
