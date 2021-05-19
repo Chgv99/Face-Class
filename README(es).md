@@ -32,9 +32,9 @@
     * Sub bullets
 </details>-->
 
-<p align="center">
+<!--<p align="center">
   <img width="460" height="300" src="https://github.com/Chgv99/Pong/blob/main/preview.gif">
-</p>
+</p>-->
 
 # Características
 
