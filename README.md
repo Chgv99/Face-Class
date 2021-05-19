@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/Chgv99/Face-Class#English">English</a> • <a href="https://github.com/Chgv99/Face-Class#Español">Español</a>
+  <a href="https://github.com/Chgv99/Face-Class/blob/main/README.md">English</a> • <a href="https://github.com/Chgv99/Face-Class/blob/main/README(es).md">Español</a>
 </p>
 
 <h1 align="center">
