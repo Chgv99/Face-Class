@@ -54,10 +54,36 @@ First of all you'll need to import the class into your project.
 3. Copy Face-Class-main/face_controller/face.pde next to the main file of your Processing project.
 4. Now you can call the Face class inside your project!
 
-<!-- To make use of the Face class:
-```processing
+To make use of the Face class you just need to create an object of the Face class and call *Process()* every frame. See [methods]() for more info.
 
-```-->
+##
+```processing
+Face player_face;
+
+void setup() {
+  size(640, 480);
+  player_face = new Face(this, "DroidCam Source 3", 0.5f, 0.2f, 0.1f, 0.1f);
+}
+
+void draw() {  
+  player_face.Process(false);
+  player_face.GetCrop(width/2,height/2);
+}
+```
+
+
+# Methods
+
+| Method | Type        | Description                                              | Parameters           |
+| ------ | ----------- | -------------------------------------------------------- | -------------------- |
+| Face   | Constructor | Defines the face object                                  | **PApplet parent** (normally *this*), **String camera_name**, **float offset** (x4) (upper, lower, left and right *offsets* of the face (optional)) |
+| Process | Void | Updates face variables using camera's output | **boolean display** (shows the whole camera output) |
+| GetDistance | float | Returns the distance between the leftmost vertex of both eyes (used as reference) |
+| GetDistanceInCm | float | Returns an approximate distance between the camera and the face of the user |
+| GetCenter | Point | Returns a point object with the *x* and *y* coordinates of the center of the face |
+| GetMouthAmplitude | float (0-1) | Returns mouth's amplitude relative to the size of the face |
+| MouthIsOpen | boolean | Returns true if mouth's amplitude is greater than a certain threshold |
+| GetCrop | void | Crops the face detected in the camera output and pastes it in the desired position | **int x**, **int y** |
 
 <p align="center">
  GitHub <a href="https://github.com/Chgv99">@Chgv99</a> · Twitter <a href="https://twitter.com/ChgvCode">@ChgvCode</a>
