@@ -9,13 +9,13 @@
   EY
 </h1>-->
 <p align="center">
- <b>A class for webcam face-detection implementation in your projects using <a href="https://processing.org/">Processing</a>.</b>
+ <b>A simple class for webcam face-detection implementation in your projects using <a href="https://processing.org/">Processing</a>.</b>
 </p>
 <p align="center">
  <img src="https://img.shields.io/badge/Project-WIP-orange"> <img src="https://img.shields.io/badge/Documentation-WIP-orange">
 </p>
 <p align="center">
- <a href="">Description</a> • <a href="">Usage</a>
+ <a href="">Features</a> • <a href="">Usage</a>
 </p>
 
 <!--<p align="center">
@@ -32,9 +32,9 @@
     * Sub bullets
 </details>-->
 
-<p align="center">
+<!--<p align="center">
   <img width="460" height="300" src="https://github.com/Chgv99/Pong/blob/main/preview.gif">
-</p>
+</p>-->
 
 # Features
 
