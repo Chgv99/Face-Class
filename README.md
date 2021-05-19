@@ -15,7 +15,7 @@
  <img src="https://img.shields.io/badge/Project-WIP-orange"> <img src="https://img.shields.io/badge/Documentation-WIP-orange">
 </p>
 <p align="center">
- <a href="">Description</a> • <a href="">Usage</a>
+ <a href="">Features</a> • <a href="">Usage</a>
 </p>
 
 <!--<p align="center">
