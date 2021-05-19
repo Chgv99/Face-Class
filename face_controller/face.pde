@@ -1,3 +1,9 @@
+/** TODO
+  * Devolver coordenadas de los elementos faciales (boca, ojos)
+  * Para ello deberá usarse una coordenada relativa al
+  * centro de la cara (center), para mayor facilidad de uso.
+  **/
+
 import processing.video.*;
 import cvimage.*;
 import org.opencv.core.*;
@@ -23,8 +29,7 @@ String faceFile, modelFile;
 
 PShape face_shape;
 
-// DEBUG
-boolean debug, outlines, smooth;
+
 
 //FILTER STATE
 int filter;
@@ -59,12 +64,12 @@ class Face{
   private float left_offset;
   private float right_offset;
   
-  public Face(PApplet parent, float upper_offset, float lower_offset,  float left_offset, float right_offset){
+  public Face(PApplet parent, String camera, float upper_offset, float lower_offset,  float left_offset, float right_offset){
     //Cámara
     cam = null;
     while (cam == null) {
       //cam = new Capture(this, width , height-60, "");
-      cam = new Capture(parent, width , height, "DroidCam Source 3");
+      cam = new Capture(parent, width , height, camera);
       //cam = new Capture(parent, width , height);
     }
     cam.start(); 
@@ -111,28 +116,6 @@ class Face{
       //Imagen de entrada
       if (display) image(img,0,0);
       
-      pushStyle();
-      //rect(0, height-40, width, 40);
-      fill(0,0,0,127);
-      rect(width-10-205, 10, 205, 20); //aumentar de 15 en 15?
-      popStyle();
-      
-      textAlign(RIGHT);
-      textSize(10);
-      text("[D] Debug  [O] Outlines  [S] Smoothness", width-15, 25);
-      
-      if (debug) {
-        pushStyle();
-        fill(0,0,0,127);
-        rect(10, 10, 250, 50); //aumentar de 15 en 15?
-        popStyle();
-        textAlign(LEFT);
-        textSize(10);
-        text("Face Distance: " + nf(face_distance_cm,0,2) + " cm (" + nf(face_distance_units,0,2) + " units)" ,15, 25);
-        text("Face Center: " + nf((float)center.x,0,2) + ", " + nf((float)center.y,0,2), 15, 40);
-        text("Mouth Amplitude: " + mouth_amplitude, 15, 55);
-      }
-      
       //Detección de puntos fiduciales
       ArrayList<MatOfPoint2f> shapes = detectFacemarks(cam);
       PVector origin = new PVector(0, 0);
@@ -155,6 +138,10 @@ class Face{
   
   public Point GetCenter(){
     return center;
+  }
+  
+  public float GetMouthAmplitude(){
+    return mouth_amplitude;
   }
   
   public boolean MouthIsOpen(){
@@ -215,24 +202,25 @@ class Face{
       if (i == 42) {
         //Right eye's leftmost vertex
         stroke(255,0,0);
-        if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 5, 5);
+        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 5, 5);
         right_eye_left_x = (int)(pt.x+o.x);
         right_eye_left_y = (int)(pt.y+o.y);
       } else if (i == 36) {
         stroke(255,0,0);
-        if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 5, 5);
+        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 5, 5);
         left_eye_left_x = (int)(pt.x+o.x);
         left_eye_left_y = (int)(pt.y+o.y);
-      } else if (i == 18) {
-        stroke(0,255,0);
-        if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
-        v1 = new Point(pt.x+o.x,pt.y+o.y);
-        //(int)(pt.y+o.y);
       /*} else if (i == 48) {
         stroke(255,0,0);
         if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
         mouth_x = (int)(pt.x+o.x);
         mouth_y = (int)(pt.y+o.y);*/
+      /*} else if (i == 18) {
+        stroke(0,255,0);
+        if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
+        v1 = new Point(pt.x+o.x,pt.y+o.y);
+        //(int)(pt.y+o.y);
+      
       } else if (i == 25) {
         stroke(0,255,0);
         if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
@@ -244,62 +232,70 @@ class Face{
       } else if (i == 11) {
         stroke(0,255,0);
         if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
-        v4 = new Point(pt.x+o.x,pt.y+o.y);
+        v4 = new Point(pt.x+o.x,pt.y+o.y);*/
       } else if (i == 50) {
         stroke(255,255,0);
-        if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
+        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
         mouth_max_x = (int)(pt.x+o.x);
         mouth_max_y = (int)(pt.y+o.y);
       } else if (i == 58) {
         stroke(255,255,0);
-        if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
+        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
         mouth_min_x = (int)(pt.x+o.x);
         mouth_min_y = (int)(pt.y+o.y);
       } else {
         stroke(255);
-        if (outlines) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 1, 1);
+        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 1, 1);
       }
-      
-      if ((pt.x+o.x) > max.x) max.x = (float)(pt.x+o.x);
+      /*if ((pt.x+o.x) > max.x) max.x = (float)(pt.x+o.x);
       if ((pt.y+o.y) > max.y) max.y = (float)(pt.y+o.y);
       if ((pt.x+o.x) < min.x) min.x = (float)(pt.x+o.x);
-      if ((pt.y+o.y) < min.y) min.y = (float)(pt.y+o.y);
+      if ((pt.y+o.y) < min.y) min.y = (float)(pt.y+o.y);*/
     }
     
     for(int i = 0; i < 17; i++){
       contour[i] = new Point(p[i].x+o.x, p[i].y+o.y);
       stroke(255,0,255);
-      ellipse((float)p[i].x+o.x, (float)p[i].y+o.y, 8, 8);
+      if (debug) ellipse((float)p[i].x+o.x, (float)p[i].y+o.y, 8, 8);
+      if ((p[i].x+o.x) > max.x) max.x = (float)(p[i].x+o.x);
+      if ((p[i].y+o.y) > max.y) max.y = (float)(p[i].y+o.y);
+      if ((p[i].x+o.x) < min.x) min.x = (float)(p[i].x+o.x);
+      if ((p[i].y+o.y) < min.y) min.y = (float)(p[i].y+o.y);
     }
     
     int j = 17;
     for (int i = 26; i >= 17; i--){
-      contour[j] = new Point(p[i].x+o.x, p[i].y+o.y - (face_distance_units * upper_offset));
+      float forehead_factor = face_distance_units * upper_offset;
+      contour[j] = new Point(p[i].x+o.x, p[i].y+o.y - forehead_factor);
       stroke(0,0,0);
-      ellipse((float)p[i].x+o.x, (float)p[i].y+o.y - (face_distance_units * upper_offset), 5, 5);
+      if (debug) ellipse((float)p[i].x+o.x, (float)p[i].y+o.y - forehead_factor, 5, 5);
       stroke(255,0,255);
-      ellipse((float)p[i].x+o.x, (float)p[i].y+o.y, 8, 8);
+      if (debug) ellipse((float)p[i].x+o.x, (float)p[i].y+o.y, 8, 8);
       j++;
-      
+      if ((p[i].x+o.x) > max.x) max.x = (float)(p[i].x+o.x);
+      if ((p[i].y+o.y - forehead_factor) > max.y) max.y = (float)(p[i].y+o.y - forehead_factor);
+      if ((p[i].x+o.x) < min.x) min.x = (float)(p[i].x+o.x);
+      if ((p[i].y+o.y - forehead_factor) < min.y) min.y = (float)(p[i].y+o.y - forehead_factor);
     }
     face_shape.endShape(CLOSE);
     popStyle();
     
-    pushStyle();
-    stroke(200,127,0);
-    noFill();
-    ellipse((float)max.x, (float)max.y, 10, 10);
-    stroke(0,127,200);
-    ellipse((float)min.x, (float)min.y, 10, 10);
-    popStyle();
-    pushStyle();
-    fill(0,255,0);
-    stroke(0,255,0);
-    line((float)max.x, (float)max.y, (float)min.x, (float)min.y);
-    int d = (int) distance((int)max.x, (int)max.y, (int)min.x, (int)min.y);
     center = new Point(min.x + ((max.x - min.x) / 2), min.y + ((max.y - min.y) / 2));//new Point(min.x + d/2, min.y + d/2);
-    ellipse((float)center.x, (float)center.y, 3, 3);
-    popStyle();
+    
+    if (debug) {
+      pushStyle();
+      stroke(200,127,0);
+      noFill();
+      ellipse((float)max.x, (float)max.y, 10, 10);
+      stroke(0,127,200);
+      ellipse((float)min.x, (float)min.y, 10, 10);
+      fill(0,255,0);
+      stroke(0,255,0);
+      line((float)max.x, (float)max.y, (float)min.x, (float)min.y);
+      //int d = (int) distance((int)max.x, (int)max.y, (int)min.x, (int)min.y);
+      ellipse((float)center.x, (float)center.y, 3, 3);
+      popStyle();
+    }
   }
   
   private void smoothenEdges(PImage img){
