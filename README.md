@@ -9,7 +9,7 @@
   EY
 </h1>-->
 <p align="center">
- <b>A class for webcam face-detection implementation in your projects using <a href="https://processing.org/">Processing</a>.</b>
+ <b>A simple class for webcam face-detection implementation in your projects using <a href="https://processing.org/">Processing</a>.</b>
 </p>
 <p align="center">
  <img src="https://img.shields.io/badge/Project-WIP-orange"> <img src="https://img.shields.io/badge/Documentation-WIP-orange">
