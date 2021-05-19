@@ -2,6 +2,11 @@
   * Devolver coordenadas de los elementos faciales (boca, ojos)
   * Para ello deberá usarse una coordenada relativa al
   * centro de la cara (center), para mayor facilidad de uso.
+  * Extraer el concepto de DEBUG de esta clase (se está usando
+  * un booleano en la clase superior.
+  * Introducir un método Settings() ??
+  * para ajustar parámetros adicionales.
+  * Asegurar enlaces del readme.
   **/
 
 import processing.video.*;
