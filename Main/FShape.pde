@@ -38,7 +38,8 @@ class FShape{
   //TODO: calculate the top and bottom points
   public float verticalAmplitude(){
     //return Expressions.distance(contour[0], contour[0]);
-    return -1;
+    PVector[] minMax = Expressions.getMinMax(contour, width, height);
+    return minMax[1].y - minMax[0].y;
   }
   /*
   public PVector[] getShape(){

@@ -1,17 +1,6 @@
 static class Expressions{
   
-  /*public static boolean mouthIsOpen(){
-    return mouth_amplitude > 0.5f;
-  }
-  
-  public static boolean eyeIsOpen(){
-    return mouth_amplitude > 0.5f;
-  }*/
-  
   public static float verticalAmplitude(FShape shape){
-    /*if (shape instanceof RealFace){
-      
-    }*/
     if (shape != null) {
       int size = shape.getContour().size();
       PVector a = null;
@@ -28,7 +17,7 @@ static class Expressions{
   }
   
   public static boolean isOpen(FShape shape){
-    if (verticalAmplitude(shape) > 2) return true;
+    if (verticalAmplitude(shape) > 25) return true;
     return false;
   }
   
@@ -37,48 +26,33 @@ static class Expressions{
     * side = 0: left eyebrow
     * side = 1: right eyebrow
     */
-  //public static boolean eyebrowIsLifted(RealEyebrow eyebrow, int side) {return true;}
-  public static boolean eyebrowIsLifted(RealEyebrow eyebrow, int side){
+  public static boolean eyebrowIsLifted(RealEyebrow eyebrow){
     if (eyebrow != null) {
-      if (eyebrow.getFace().getCenter().y - eyebrow.getTop().y);
-      
-      switch (side){
-        case 0: //left
-          /*int size = eyebrow.getContour().size();
-          PVector a = null;
-          PVector b = null;
-          if((size/4)%1 != 0) a = eyebrow.getContour().get((int)Math.ceil(size/4));
-          else b = eyebrow.getContour().get((int)Math.ceil((size/4)+1));
-          float d = dist(a.x, a.y, b.x, b.y);
-          if (d > 2) return true;*/
-          break;
-        case 1: //right
-          /*int size = shape.getContour().length;
-          PVector a = null;
-          PVector b = null;
-          if((size/4)%1 != 0) a = shape.getContour()[(int)Math.ceil(size/4)];
-          else b = shape.getContour()[(int)Math.ceil((size/4)+1)];
-          float d = dist(a.x, a.y, b.x, b.y);
-          if (d > 2) return true;*/
-          break;
-      }
+      println("distancia centro-ceja = " + (eyebrow.getFace().getCenter().y - eyebrow.getTop().y));
+      if (eyebrow.getFace().getCenter().y - eyebrow.getTop().y > 50) return true;
     }
     return false;
+  }
+  
+  public static PVector[] getMinMax(ArrayList<PVector> contour, float w, float h){
+    PVector max = new PVector(0,0);
+    PVector min = new PVector(w, h);
+    for (PVector point : contour){
+      if (point.x > max.x) max.x = point.x;
+      if (point.y > max.y) max.y = point.y;
+      if (point.x < min.x) min.x = point.x;
+      if (point.y < min.y) min.y = point.y;
+    }
+    
+    return new PVector[]{min, max};
   }
   
   public static PVector centerOf(ArrayList<PVector> contour, float w, float h){
     if (contour != null){
       /**PVector max = contour[0];
       PVector min = contour[0];**/
-      PVector max = new PVector(0,0);
-      PVector min = new PVector(w, h);
-      for (PVector point : contour){
-        if (point.x > max.x) max.x = point.x;
-        if (point.y > max.y) max.y = point.y;
-        if (point.x < min.x) min.x = point.x;
-        if (point.y < min.y) min.y = point.y;
-      }
-      return new PVector(min.x + ((max.x - min.x) / 2), min.y + ((max.y - min.y) / 2));//new Point(min.x + d/2, min.y + d/2);
+      PVector[] minMax = getMinMax(contour, w, h);
+      return new PVector(minMax[0].x + ((minMax[1].x - minMax[0].x) / 2), minMax[0].y + ((minMax[1].y - minMax[0].y) / 2));//new Point(min.x + d/2, min.y + d/2);
     }
     return null;
   }
@@ -109,5 +83,9 @@ static class Expressions{
   
   public static PVector makeRelative(PVector v, PVector center){
     return PVector.sub(v, center);
+  }
+  
+  public static float makeProportional(float distance, float reference){
+    return distance / reference;
   }
 }

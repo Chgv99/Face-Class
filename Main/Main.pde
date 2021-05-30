@@ -92,25 +92,26 @@ void draw() {
           nf(Expressions.makeRelative(faceController.getLeftEyebrow().getTop(), faceController.getCenter()).x,0,2) +
           ", " + 
           nf(Expressions.makeRelative(faceController.getLeftEyebrow().getTop(), faceController.getCenter()).y,0,2) + 
-          "(" + Expressions.eyebrowIsLifted(faceController.getLeftEyebrow(), 0) + ")",
+          " (" + Expressions.eyebrowIsLifted(faceController.getLeftEyebrow()) + ")",
           15,
           55);
     text("Right Eyebrow (Relative): " + 
           nf(Expressions.makeRelative(faceController.getRightEyebrow().getTop(), faceController.getCenter()).x,0,2) +
           ", " + 
           nf(Expressions.makeRelative(faceController.getRightEyebrow().getTop(), faceController.getCenter()).y,0,2) + 
-          "(" + Expressions.eyebrowIsLifted(faceController.getRightEyebrow(), 1) + ")",
+          " (" + Expressions.eyebrowIsLifted(faceController.getRightEyebrow()) + ")",
           15,
           70);
-    text("Left Eye (Relative): " + nf(faceController.getRightEye().getCenter().x,0,2) +
-          ", " + nf(faceController.getRightEye().getCenter().y,0,2),
+    text("Left Eye (Relative): " + nf(Expressions.makeRelative(faceController.getLeftEye().getCenter(), faceController.getCenter()).x,0,2) +
+          ", " + nf(Expressions.makeRelative(faceController.getLeftEye().getCenter(), faceController.getCenter()).y,0,2),
           15,
           85);
-    text("Right Eye (Relative): " + nf(faceController.getLeftEye().getCenter().x,0,2) +
-          ", " + nf(faceController.getLeftEye().getCenter().y,0,2),
+    text("Right Eye (Relative): " + nf(Expressions.makeRelative(faceController.getRightEye().getCenter(), faceController.getCenter()).x,0,2) +
+          ", " + nf(Expressions.makeRelative(faceController.getRightEye().getCenter(), faceController.getCenter()).y,0,2),
           15,
           100);
-    text("Mouth Amplitude: " + faceController.getMouth().verticalAmplitude(), 
+    text("Mouth Amplitude: " + faceController.getMouth().verticalAmplitude() +
+          " (" + Expressions.isOpen(faceController.getMouth()) + ")", 
           15, 
           115);
   } else {
@@ -127,7 +128,7 @@ void draw() {
     pushStyle();
     fill(255,0,0);
     noStroke();
-    //rect((float)position.x-25, (float)position.y,50, 500);
+    rect((float)position.x-25, (float)position.y,50, 500);
     popStyle();
   }
 }
