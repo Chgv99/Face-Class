@@ -1,25 +1,25 @@
 class FShape{
   
-  protected ArrayList<PVector> contour;
+  protected PVector[] contour;
   protected PVector center;
   //protected PShape contourShape;
   
   public FShape(){}
   
-  public FShape(ArrayList<PVector> points){
+  public FShape(PVector[] points){
     contour = points;
   }
   
-  public void setPoints(ArrayList<PVector> contour, float w, float h){
+  public void setPoints(PVector[] contour, float w, float h){
     setContour(contour);
     setCenter(Expressions.centerOf(contour, w, h));
   }
   
-  public ArrayList<PVector> getContour(){
+  public PVector[] getContour(){
     return contour;
   }
   
-  public void setContour(ArrayList<PVector> contour){
+  public void setContour(PVector[] contour){
     this.contour = contour;
   }
   

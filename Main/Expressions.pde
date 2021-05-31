@@ -2,14 +2,14 @@ static class Expressions{
   
   public static float verticalAmplitude(FShape shape){
     if (shape != null) {
-      int size = shape.getContour().size();
+      int size = shape.getContour().length;
       PVector a = null;
       PVector b = null;
       int aux;
       if((size/4)%1 != 0) aux = (int)Math.ceil(size/4);  
       else aux = (int)Math.ceil((size/4)+1);
-      a = shape.getContour().get(aux);
-      b = shape.getContour().get(aux + (size/2));
+      a = shape.getContour()[aux];
+      b = shape.getContour()[aux + (size/2)];
 
       return dist(a.x, a.y, b.x, b.y);
     }
@@ -34,10 +34,12 @@ static class Expressions{
     return false;
   }
   
-  public static PVector[] getMinMax(ArrayList<PVector> contour, float w, float h){
-    PVector max = new PVector(0,0);
+  public static PVector[] getMinMax(PVector[] contour, float w, float h){
+    println("Contour: "+ (Object[])contour);
+    PVector max = new PVector(0, 0);
     PVector min = new PVector(w, h);
     for (PVector point : contour){
+      println("Point: " + point);
       if (point.x > max.x) max.x = point.x;
       if (point.y > max.y) max.y = point.y;
       if (point.x < min.x) min.x = point.x;
@@ -47,7 +49,7 @@ static class Expressions{
     return new PVector[]{min, max};
   }
   
-  public static PVector centerOf(ArrayList<PVector> contour, float w, float h){
+  public static PVector centerOf(PVector[] contour, float w, float h){
     if (contour != null){
       /**PVector max = contour[0];
       PVector min = contour[0];**/

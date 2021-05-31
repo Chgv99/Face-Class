@@ -37,7 +37,7 @@ void setup() {
   position = new Point(width/2, height/2);
   
   //player_face = new Face(this, "DroidCam Source 3", 0.5f, 0.2f, 0.1f, 0.1f);
-  faceController = new FaceController(this, true, 20, "DroidCam Source 3", 0.5f, 0.2f, 0.1f, 0.1f);
+  faceController = new FaceController(this, "DroidCam Source 3", 0.5f, 0.2f, 0.1f, 0.1f);
   faceController.process();
   println("Initial values:");
   println("Face Center: " + faceController.getFace().getCenter());
@@ -55,7 +55,7 @@ void setup() {
 
 void draw() {  
   faceController.process(debug);
-  
+  faceController.print();
   pushStyle();
   fill(0,0,0,127);
   rect(width-10-205, 10, 205, 20); //aumentar de 15 en 15?

@@ -38,7 +38,7 @@ PShape face_shape;
 class FaceController{
   
   private RealFace face;
-  ArrayList<PVector> contour = new ArrayList();
+  PVector[] contour = new PVector[27];
   
   private RealFace naturalFace;
   PVector[] naturalContour = new PVector[27];
@@ -65,8 +65,8 @@ class FaceController{
   //private Point left_eyebrow_n;
   //private Point right_eyebrow_n;
   
-  private ArrayList<PVector> left_eyebrow;
-  private ArrayList<PVector> right_eyebrow;
+  private PVector[] left_eyebrow = new PVector[5];
+  private PVector[] right_eyebrow = new PVector[5];
   private int buffer_size;
   
   //EYES
@@ -74,40 +74,22 @@ class FaceController{
   //int left_eye_left_x, left_eye_left_y, right_eye_left_x, right_eye_left_y, eyeb_y;
   private RealEye leftEye;
   private RealEye rightEye;
-  private ArrayList<PVector> left_eye = new ArrayList();
-  private ArrayList<PVector> right_eye = new ArrayList();
+  private PVector[] left_eye = new PVector[6];
+  private PVector[] right_eye = new PVector[6];
   
   //MOUTH
   //float alpha_product;
   private RealMouth mouth;
-  private ArrayList<PVector> mouth_vector = new ArrayList();
+  private PVector[] mouth_vector = new PVector[12];
   //PImage mouth;
   private int mouth_x, mouth_y, mouth_min_x, mouth_max_x, mouth_min_y, mouth_max_y;
   private float mouth_amplitude;
   private float mouth_threshold;
   
-  /**private ArrayList<Point> left_eyebrow_buffer;
-  private ArrayList<Point> right_eyebrow_buffer;
-  private float cal_buffer_size = -1;*/
-  
   /**
-    * Constructor overload that allows to enable or
-    * disable an initial calibration for better results.
-    * Calls main constructor and then executes the
-    * calibration.
+    * Constructor.
     **/
-  public FaceController(PApplet parent, boolean calibration, int cal_threshold, String camera, float upper_offset, float lower_offset,  float left_offset, float right_offset){
-    this(parent, camera, upper_offset, lower_offset, left_offset, right_offset);
-    /*if (calibration) {
-      left_eyebrow_buffer = new ArrayList();
-      right_eyebrow_buffer = new ArrayList();
-      cal_buffer_size = cal_threshold;
-    }*/
-  }
-  
-  /**
-    * Main constructor.
-    **/
+  public FaceController(PApplet parent, String camera) {this(parent, camera, 0.5, 0.2, 0.1, 0.1);}
   public FaceController(PApplet parent, String camera, float upper_offset, float lower_offset,  float left_offset, float right_offset){
     //Camera
     cam = null;
@@ -134,7 +116,7 @@ class FaceController{
     
     //Objects
     face = new RealFace();
-    contour = new ArrayList();
+    //contour = new ArrayList();
     leftEyebrow = new RealEyebrow();
     rightEyebrow = new RealEyebrow();
     leftEye = new RealEye();
@@ -162,19 +144,21 @@ class FaceController{
     
     //Buffers that help getting rid of
     //spurious pulses.
-    left_eyebrow = new ArrayList();
-    right_eyebrow = new ArrayList();
-    buffer_size = 1;
+    
+    //left_eyebrow = new ArrayList();
+    //right_eyebrow = new ArrayList();
+    
+    //buffer_size = 1;
   }
   
-  private void clearAll(){
+  /*private void clearAll(){
     contour.clear();
     left_eyebrow.clear();
     right_eyebrow.clear();
     left_eye.clear();
     right_eye.clear();
     mouth_vector.clear();
-  }
+  }*/
   
   /** Updates the values of the points 
       *  and, by extension, the rest of values
@@ -182,7 +166,7 @@ class FaceController{
       * (call every frame)**/
   private void process() {process(false);}
   private void process(boolean debug){
-    clearAll();
+    //clearAll();
     println("Process (FaceController)");
     if (cam.available()) {
       background(0);
@@ -380,14 +364,14 @@ class FaceController{
           if (i >= 42 && i <= 47) { //Right eye
             stroke(255,255,0);
             if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
-            right_eye.add(new PVector((float)(pt.x+o.x), (float)(pt.y+o.y)));
+            right_eye[i-42] = new PVector((float)(pt.x+o.x), (float)(pt.y+o.y));
           } else if (i >= 36 && i <= 41) {
             stroke(255,0,0);
             if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
-            left_eye.add(new PVector((float)(pt.x+o.x), (float)(pt.y+o.y)));
+            left_eye[i-36] = new PVector((float)(pt.x+o.x), (float)(pt.y+o.y));
           } else if (i >= 48 && i <= 59) {
             if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
-            mouth_vector.add(new PVector((float)(pt.x+o.x), (float)(pt.y+o.y)));
+            mouth_vector[i-48] = new PVector((float)(pt.x+o.x), (float)(pt.y+o.y));
           } else {
             stroke(255);
             if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 1, 1);
@@ -398,7 +382,7 @@ class FaceController{
     }
     
     for(int i = 0; i < 17; i++){
-      contour.add(new PVector((float)p[i].x+o.x, (float)p[i].y+o.y));
+      contour[i] = new PVector((float)p[i].x+o.x, (float)p[i].y+o.y);
       stroke(255,0,255);
       if (debug) ellipse((float)p[i].x+o.x, (float)p[i].y+o.y, 8, 8);
     }
@@ -406,18 +390,18 @@ class FaceController{
     //int j = 17;
     for (int i = 26; i >= 17; i--){
       float forehead_factor = face_distance_units * upper_offset;
-      contour.add(new PVector((float)p[i].x+o.x, (float)p[i].y+o.y - forehead_factor));
+      contour[17+26-i] = new PVector((float)p[i].x+o.x, (float)p[i].y+o.y - forehead_factor);
       stroke(0,0,0);
       if (debug) ellipse((float)p[i].x+o.x, (float)p[i].y+o.y - forehead_factor, 5, 5);
       stroke(255,0,0);
       
       if (i <= 26 && i >= 22) {
         stroke(255,0,0);
-        right_eyebrow.add(0, new PVector((float)p[i].x+o.x, (float)p[i].y+o.y));
+        right_eyebrow[i-22] = new PVector((float)p[i].x+o.x, (float)p[i].y+o.y);
       }
       if (i <= 21 && i >= 17) {
         stroke(0,255,0);
-        left_eyebrow.add(0, new PVector((float)p[i].x+o.x, (float)p[i].y+o.y));
+        left_eyebrow[i-17] = new PVector((float)p[i].x+o.x, (float)p[i].y+o.y);
       }
       if (debug) ellipse((float)p[i].x+o.x, (float)p[i].y+o.y, 8, 8);
     }
@@ -449,5 +433,9 @@ class FaceController{
       ellipse(getCenter().x, getCenter().y, 3, 3);
       popStyle();
     }
+  }
+  
+  public void print(){
+    face.print();
   }
 }

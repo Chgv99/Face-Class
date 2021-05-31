@@ -96,7 +96,7 @@ class RealFace extends FShape{
   }
   
   public void setChin(RealMouth mouth){
-    chin = contour.get(0);
+    chin = contour[0];
   }
   
   public void print(){

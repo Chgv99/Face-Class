@@ -15,8 +15,8 @@ class RealEyebrow extends FShape{
   }
   
   public PVector getTop(){
-    if (contour != null && contour.get(0) != null) {
-      PVector top = contour.get(0);
+    if (contour != null && contour[0] != null) {
+      PVector top = contour[0];
       for (PVector point : contour){
         if (face.getCenter().y - point.y > face.getCenter().y - top.y) top = point;
       }
