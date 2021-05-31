@@ -12,7 +12,7 @@
  <b>A simple class for webcam face-detection implementation in your projects using <a href="https://processing.org/">Processing</a>.</b>
 </p>
 <p align="center">
- <img src="https://img.shields.io/badge/Project-WIP-orange"> <img src="https://img.shields.io/badge/Documentation-WIP-orange">
+ <img src="https://img.shields.io/badge/Project-WIP-orange"> <img src="https://img.shields.io/badge/Documentation-Outdated-orange">
 </p>
 <p align="center">
  <a href="">Features</a> • <a href="">Usage</a>
@@ -58,16 +58,16 @@ To make use of the Face class you just need to create an object of the Face clas
 
 ##
 ```processing
-Face player_face;
+FaceController fc;
 
 void setup() {
   size(640, 480);
-  player_face = new Face(this, "DroidCam Source 3", 0.5f, 0.2f, 0.1f, 0.1f);
+  fc = new FaceController(this, "Camera Name");
 }
 
 void draw() {  
-  player_face.Process(false);
-  player_face.GetCrop(width/2,height/2);
+  fc.Process();
+  fc.GetCrop(width/2,height/2);
 }
 ```
 
@@ -76,12 +76,19 @@ void draw() {
 
 | Method | Type        | Description                                              | Parameters           |
 | ------ | ----------- | -------------------------------------------------------- | -------------------- |
-| Face   | Constructor | Defines the face object                                  | **PApplet parent** (normally *this*), **String camera_name**, **float offset** (x4) (upper, lower, left and right *offsets* of the face (optional)) |
-| Process | Void | Updates face variables using camera's output | **boolean display** (shows the whole camera output) |
-| GetDistance | float | Returns the distance between the leftmost vertex of both eyes (used as reference) |
-| GetDistanceInCm | float | Returns an approximate distance between the camera and the face of the user |
-| GetCenter | Point | Returns a point object with the *x* and *y* coordinates of the center of the face |
-| GetMouthAmplitude | float (0-1) | Returns mouth's amplitude relative to the size of the face |
+| FaceController   | Constructor | Defines the face object | **PApplet parent** (normally *this*), **String camera_name** |
+| FaceController (overloaded)   | Constructor | Defines the face object | **PApplet parent** (normally *this*), **String camera_name**, **float offset** (x4) (upper, lower, left and right *offsets* of the face) |
+| process | Void | Updates face variables using camera's output |
+| process (overloaded) | Void | Updates face variables using camera's output | **boolean debug** (shows the whole camera output along with facial points) |
+| getFace | RealFace | Returns the reference of the raw face object used in FaceController |
+| getLeftEyebrow | RealEyebrow | Returns the reference of the left eyebrow object |
+| getRightEyebrow | RealEyebrow | Returns the reference of the right eyebrow object |
+| getLeftEye | RealEyebrow | Returns the reference of the left eye object |
+| getRightEye | RealEyebrow | Returns the reference of the right eye object |
+| getMouth | RealEyebrow | Returns the reference of the mouth object |
+| getDistance | float | Returns an approximate distance between the camera and the face of the user |
+| getCenter | PVector | Returns the coordinates of the center of the face |
+| getMouthAmplitude | float (0-1) | Returns mouth's amplitude relative to the size of the face |
 | MouthIsOpen | boolean | Returns true if mouth's amplitude is greater than a certain threshold |
 | GetCrop | void | Crops the face detected in the camera output and pastes it in the desired position | **int x**, **int y** |
 
