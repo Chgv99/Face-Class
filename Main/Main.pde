@@ -38,7 +38,7 @@ void setup() {
   
   //player_face = new Face(this, "DroidCam Source 3", 0.5f, 0.2f, 0.1f, 0.1f);
   faceController = new FaceController(this, true, 20, "DroidCam Source 3", 0.5f, 0.2f, 0.1f, 0.1f);
-  faceController.Process(false);
+  faceController.process();
   println("Initial values:");
   println("Face Center: " + faceController.getFace().getCenter());
   /**println("Left Eyebrow (Relative): " + (playerFace.getLeftEyebrow().getTop().x) +
@@ -54,7 +54,7 @@ void setup() {
 }
 
 void draw() {  
-  faceController.Process(debug);
+  faceController.process(debug);
   
   pushStyle();
   fill(0,0,0,127);
@@ -80,7 +80,7 @@ void draw() {
     popStyle();
     textAlign(LEFT);
     textSize(10);
-    text("Face Distance: " + nf(faceController.getDistanceFromCamera(),0,2) +
+    text("Face Distance: " + nf(faceController.getDistance(),0,2) +
          " cm (" + nf(faceController.getFace().getReference(),0,2) + " units)", 
          15, 
          25);

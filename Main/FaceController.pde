@@ -167,7 +167,7 @@ class FaceController{
     buffer_size = 1;
   }
   
-  private void ClearAll(){
+  private void clearAll(){
     contour.clear();
     left_eyebrow.clear();
     right_eyebrow.clear();
@@ -180,8 +180,9 @@ class FaceController{
       *  and, by extension, the rest of values
       *  needed to work with the class. 
       * (call every frame)**/
-  private void Process(boolean display){
-    ClearAll();
+  private void process() {process(false);}
+  private void process(boolean debug){
+    clearAll();
     println("Process (FaceController)");
     if (cam.available()) {
       background(0);
@@ -193,7 +194,7 @@ class FaceController{
       
       //Input image
       println("Cam display");
-      if (display) image(img,0,0);
+      if (debug) image(img,0,0);
       
       //Fiducial point detection
       //Facial elements update
@@ -201,7 +202,7 @@ class FaceController{
       PVector origin = new PVector(0, 0);
       for (MatOfPoint2f sh : shapes) {
           Point [] pts = sh.toArray();
-          updateFacialElements(pts, origin);
+          updateFacialElements(pts, origin, debug);
           //shape(face_shape);
       }
       
@@ -297,102 +298,20 @@ class FaceController{
     return mouth;
   }
   
-  public float GetDistance(){
-    return face_distance_units;
-  }
-  
-  public float GetDistanceInCm(){
-    return face_distance_cm;
-  }
-  
-  public PVector getCenter(){
-    return getFace().getCenter();
-  }
-  
-  public float GetMouthAmplitude(){
-    return mouth_amplitude;
-  }
-  
-  public float getDistanceFromCamera(){
-    println("facereference: " + face.getReference());
-    face.print();
-    println(face.getReference());
+  public float getDistance(){
     return Expressions.distanceFromCamera(2900, face.getReference());
   }
-  
-  /*public boolean mouthIsOpen(){
-    return mouth_amplitude > 0.5f;
+  /*public float getDistanceFromCamera(){
+    return Expressions.distanceFromCamera(2900, face.getReference());
   }*/
   
-  /*public boolean LeftEyebrowIsLifted(){
-    //println(GetLeftEyebrow().x + ", " + GetLeftEyebrow().y);
-    //println(GetRightEyebrow().x + ", " + GetRightEyebrow().y);
-    println("left_eyebrow.y = " + GetLeftEyebrow().y); //Media de puntos restados al centro sin dividir por la unidad de cara
-    println("left_eyebrow_n.y = " + left_eyebrow_n.y);  //Media de puntos restados al centro divididos por la unidad de cara
-    println(abs((float)GetLeftEyebrow().y  - (float)left_eyebrow_n.y));
-    return (abs((float)GetLeftEyebrow().y  - (float)left_eyebrow_n.y)) > 1;
+  public PVector getCenter(){
+    return face.getCenter();
   }
   
-  public boolean RightEyebrowIsLifted(){
-    //return GetRightEyebrow().y - right_eyebrow_n.y > 5;
-    
-    println("left_eyebrow.y = " + GetRightEyebrow().y); //Media de puntos restados al centro sin dividir por la unidad de cara
-    println("left_eyebrow_n.y = " + right_eyebrow_n.y);  //Media de puntos restados al centro divididos por la unidad de cara
-    println(abs((float)GetRightEyebrow().y  - (float)right_eyebrow_n.y));
-    return (abs((float)GetRightEyebrow().y  - (float)right_eyebrow_n.y)) > 1;
+  public float getMouthAmplitude(){
+    return Expressions.verticalAmplitude(mouth);
   }
-  
-  public Point getLeftEyebrow(){
-    if (left_eyebrow.size() < buffer_size) return left_eyebrow.get(0);
-    else {
-      float aux_x = 0;
-      float aux_y = 0;
-      for (int i = 0; i < left_eyebrow.size(); i++){
-        //println(left_eyebrow.get(i) + ", ");
-        aux_x += left_eyebrow.get(i).x;
-        aux_y += left_eyebrow.get(i).y;
-      }
-      aux_x /= buffer_size;
-      aux_y /= buffer_size;
-      println("aux_x: " + aux_x / buffer_size + " aux_y: " + aux_y / buffer_size);
-      println("end of buffer (left_eyebrow) size: " + buffer_size);
-      //noLoop();
-      return new Point((aux_x - getCenter().x) / face_distance_units, (aux_y - getCenter().y) / face_distance_units);
-    }
-  }
-  
-  public Point getRightEyebrow(){
-    if (right_eyebrow.size() < buffer_size) return right_eyebrow.get(0);
-    else {
-      float aux_x = 0;
-      float aux_y = 0;
-      for (int i = 0; i < right_eyebrow.size(); i++){
-        aux_x += right_eyebrow.get(i).x;
-        aux_y += right_eyebrow.get(i).y;
-      }
-      aux_x /= buffer_size;
-      aux_y /= buffer_size;
-      return new Point((aux_x - getCenter().x) / face_distance_units, (aux_y - getCenter().y) / face_distance_units);
-    }
-  }*/
-  
-  /*private void AddLeftEyebrow(Point point){
-    if (left_eyebrow.size() < buffer_size) {
-      left_eyebrow.add(point);
-    } else {
-      left_eyebrow.remove(0);
-      left_eyebrow.add(point);
-    }
-  }
-  
-  private void AddRightEyebrow(Point point){
-    if (right_eyebrow.size() < buffer_size) {
-      right_eyebrow.add(point);
-    } else {
-      right_eyebrow.remove(0);
-      right_eyebrow.add(point);
-    }
-  }*/
   
   public void getCrop(int x, int y){
     maskImage = createGraphics(width,height);
@@ -414,18 +333,6 @@ class FaceController{
     image(img, x - getFace().getCenter().x, y - getFace().getCenter().y);
   }
   
-  /*public void SetNaturalLeftEyebrow(Point point){
-    left_eyebrow_n = point;
-  }
-  
-  public void SetNaturalRightEyebrow(Point point){
-    right_eyebrow_n = point;
-  }*/
-  
-  private float distance(int x_1, int y_1, int x_2, int y_2){
-    return sqrt(pow(x_1 - x_2, 2) + pow(y_1 - y_2, 2));
-  }
-  
   private ArrayList<MatOfPoint2f> detectFacemarks(PImage i) {
     ArrayList<MatOfPoint2f> shapes = new ArrayList<MatOfPoint2f>();
     CVImage im = new CVImage(i.width, i.height);
@@ -438,90 +345,62 @@ class FaceController{
     return shapes;
   }
   
-  private void updateFacialElements(Point [] p, PVector o) {
+  private void updateFacialElements(Point [] p, PVector o, boolean debug) {
     pushStyle();
     noStroke();
-    //fill(255,0,0);
     noFill();
     face_shape = createShape();
     face_shape.beginShape();
-  
-    //Point max = new Point(0,0);
-    //Point min = new Point(width,height);
-    
-    //Point left_eyebrow_aux = new Point();
-    //Point right_eyebrow_aux = new Point();
     
     for (int i = 0; i < p.length; i++) {
       Point pt = p[i];
       face_shape.vertex((float)pt.x+o.x, (float)pt.y+o.y);
       //ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
-      if (i == 19) {
-        //Left eyebrow
-        stroke(0,0,255);
-        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 5, 5);
-        //left_eyebrow_aux = new Point((float)pt.x+o.x, (float)pt.y+o.y);
-      } else if (i == 24) {
-        //Right eyebrow
-        stroke(0,0,255);
-        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 5, 5);
-        //right_eyebrow_aux = new Point((float)pt.x+o.x, (float)pt.y+o.y);
-      } else if (i >= 42 && i <= 47) {
-        //Right eye's leftmost vertex
-        stroke(255,255,0);
-        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
-        right_eye.add(new PVector((float)(pt.x+o.x), (float)(pt.y+o.y)));
-      } else if (i >= 36 && i <= 41) {
-        stroke(255,0,0);
-        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
-        //left_eye_left_x = (int)(pt.x+o.x);
-        //left_eye_left_y = (int)(pt.y+o.y);
-        left_eye.add(new PVector((float)(pt.x+o.x), (float)(pt.y+o.y)));
-      } else if (i >= 48 && i <= 59) {
-        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
-        mouth_vector.add(new PVector((float)(pt.x+o.x), (float)(pt.y+o.y)));
-      } else if (i == 27) {
-        pushStyle();
-        noStroke();
-        fill(127,0,255);
-        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
-        popStyle();
-      } else if (i == 8) {
-        pushStyle();
-        noStroke();
-        fill(127,0,255);
-        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
-        popStyle();
-      }/* else if (i == 58) {
-        stroke(255,255,0);
-        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
-        mouth_min_x = (int)(pt.x+o.x);
-        mouth_min_y = (int)(pt.y+o.y);
-      }*/ else {
-        stroke(255);
-        if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 1, 1);
+      pushStyle();
+      switch (i) {
+        case 8:
+          noStroke();
+          fill(127,0,255);
+          if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
+          break;
+        case 19:  //Left eyebrow
+          stroke(0,0,255);
+          if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 5, 5);
+          break;
+        case 24:  //Right eyebrow
+          stroke(0,0,255);
+          if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 5, 5);
+          break;
+        case 27:
+          noStroke();
+          fill(127,0,255);
+          if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
+          break;
+        default:
+          if (i >= 42 && i <= 47) { //Right eye
+            stroke(255,255,0);
+            if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
+            right_eye.add(new PVector((float)(pt.x+o.x), (float)(pt.y+o.y)));
+          } else if (i >= 36 && i <= 41) {
+            stroke(255,0,0);
+            if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
+            left_eye.add(new PVector((float)(pt.x+o.x), (float)(pt.y+o.y)));
+          } else if (i >= 48 && i <= 59) {
+            if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 3, 3);
+            mouth_vector.add(new PVector((float)(pt.x+o.x), (float)(pt.y+o.y)));
+          } else {
+            stroke(255);
+            if (debug) ellipse((float)pt.x+o.x, (float)pt.y+o.y, 1, 1);
+          }
+          break;
       }
-      /*if ((pt.x+o.x) > max.x) max.x = (float)(pt.x+o.x);
-      if ((pt.y+o.y) > max.y) max.y = (float)(pt.y+o.y);
-      if ((pt.x+o.x) < min.x) min.x = (float)(pt.x+o.x);
-      if ((pt.y+o.y) < min.y) min.y = (float)(pt.y+o.y);*/
+      popStyle();
     }
-    //left_eye[3] = new Point(left_eye[2].x + ((left_eye[4].x - left_eye[2].x) / 2), left_eye[2].y + ((left_eye[4].y - left_eye[2].y) / 2));
-    //left_eye[7] = new Point(left_eye[6].x + ((left_eye[8].x - left_eye[6].x) / 2), left_eye[6].y + ((left_eye[8].y - left_eye[6].y) / 2));
-    //left_eye[0] = new Point(left_eye[7].x + ((left_eye[3].x - left_eye[7].x) / 2), left_eye[3].y + ((left_eye[7].y - left_eye[3].y) / 2));
-    
-    //right_eye[3] = new Point(right_eye[2].x + ((right_eye[4].x - right_eye[2].x) / 2), right_eye[2].y + ((right_eye[4].y - right_eye[2].y) / 2));
-    //right_eye[7] = new Point(right_eye[6].x + ((right_eye[8].x - right_eye[6].x) / 2), right_eye[6].y + ((right_eye[8].y - right_eye[6].y) / 2));
-    //right_eye[0] = new Point(right_eye[7].x + ((right_eye[3].x - right_eye[7].x) / 2), right_eye[3].y + ((right_eye[7].y - right_eye[3].y) / 2));
     
     for(int i = 0; i < 17; i++){
       contour.add(new PVector((float)p[i].x+o.x, (float)p[i].y+o.y));
       stroke(255,0,255);
       if (debug) ellipse((float)p[i].x+o.x, (float)p[i].y+o.y, 8, 8);
-      /*if ((p[i].x+o.x) > max.x) max.x = (float)(p[i].x+o.x);
-      if ((p[i].y+o.y) > max.y) max.y = (float)(p[i].y+o.y);
-      if ((p[i].x+o.x) < min.x) min.x = (float)(p[i].x+o.x);
-      if ((p[i].y+o.y) < min.y) min.y = (float)(p[i].y+o.y);*/
     }
     
     //int j = 17;
@@ -541,12 +420,6 @@ class FaceController{
         left_eyebrow.add(0, new PVector((float)p[i].x+o.x, (float)p[i].y+o.y));
       }
       if (debug) ellipse((float)p[i].x+o.x, (float)p[i].y+o.y, 8, 8);
-      
-      //j++;
-      /*if ((p[i].x+o.x) > max.x) max.x = (float)(p[i].x+o.x);
-      if ((p[i].y+o.y - forehead_factor) > max.y) max.y = (float)(p[i].y+o.y - forehead_factor);
-      if ((p[i].x+o.x) < min.x) min.x = (float)(p[i].x+o.x);
-      if ((p[i].y+o.y - forehead_factor) < min.y) min.y = (float)(p[i].y+o.y - forehead_factor);*/
     }
     popStyle();
     
@@ -564,13 +437,6 @@ class FaceController{
     rightEye.setPoints(right_eye, width, height);
     println("Building mouth");
     mouth.setPoints(mouth_vector, width, height);
-    
-    
-    //center = new Point(min.x + ((max.x - min.x) / 2), min.y + ((max.y - min.y) / 2));//new Point(min.x + d/2, min.y + d/2);
-    
-    //Añadían al buffer para el suavizado de la vibracion
-    //AddLeftEyebrow(new Point(left_eyebrow_aux.x - center.x, left_eyebrow_aux.y - center.y));
-    //AddRightEyebrow(new Point(right_eyebrow_aux.x - center.x, right_eyebrow_aux.y - center.y));
     
     if (debug) {
       pushStyle();

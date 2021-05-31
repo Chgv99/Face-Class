@@ -72,7 +72,7 @@ static class Expressions{
     * Distance in centimeters from the camera
     */
   //calibrationFactor = 2900 en las pruebas
-  public static float distanceFromCamera(float calibrationFactor, float reference){
+  public static float distanceFromCamera(int calibrationFactor, float reference){
     return calibrationFactor / reference;
   }
   
