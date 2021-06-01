@@ -10,4 +10,8 @@ class RealMouth extends FShape{
     this.face = face;
   }
   
+  public boolean isOpen(){
+    return Expressions.isOpen(this);
+  }
+  
 }

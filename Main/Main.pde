@@ -65,14 +65,17 @@ void draw() {
   textSize(10);
   text("[D] Debug  [O] Outlines  [S] Smoothness", width-15, 25);
   
-  PVector leftEye = new PVector();
-  PVector rightEye = new PVector();
+  PVector leftEye;
+  PVector rightEye;
   
   //Get eyes relatively from the center of the face
   //leftEye = Expressions.makeRelative(faceController.getLeftEye().getCenter(), faceController.getFace().getCenter());
   //rightEye = Expressions.makeRelative(faceController.getRightEye().getCenter(), faceController.getFace().getCenter());
   leftEye = faceController.getLeftEye().getCenter();
   rightEye = faceController.getRightEye().getCenter();
+  
+  circle(mouseX, mouseY, 20);
+  
   if (debug) {
     pushStyle();
     fill(0,0,0,127);
@@ -111,7 +114,7 @@ void draw() {
           15,
           100);
     text("Mouth Amplitude: " + faceController.getMouth().verticalAmplitude() +
-          " (" + Expressions.isOpen(faceController.getMouth()) + ")", 
+          " (" + faceController.getMouth().isOpen() + ")", 
           15, 
           115);
   } else {
@@ -119,7 +122,7 @@ void draw() {
     pushStyle();
     fill(255,0,255);
     noStroke();
-    //circle((float)position.x + (float)left_eye.x, (float)position.y + (float)left_eye.y, 10);
+    //circle((float)position.x + (float)faceController.getLeftEye().x, (float)position.y + (float)left_eye.y, 10);
     popStyle();//faceController.;
   }
   

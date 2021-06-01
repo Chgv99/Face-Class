@@ -35,11 +35,11 @@ static class Expressions{
   }
   
   public static PVector[] getMinMax(PVector[] contour, float w, float h){
-    println("Contour: "+ (Object[])contour);
+    //println("Contour: "+ (Object[])contour);
     PVector max = new PVector(0, 0);
     PVector min = new PVector(w, h);
     for (PVector point : contour){
-      println("Point: " + point);
+      //println("Point: " + point);
       if (point.x > max.x) max.x = point.x;
       if (point.y > max.y) max.y = point.y;
       if (point.x < min.x) min.x = point.x;

@@ -93,7 +93,7 @@ class FaceController{
   public FaceController(PApplet parent, String camera, float upper_offset, float lower_offset,  float left_offset, float right_offset){
     //Camera
     cam = null;
-    while (cam == null) cam = new Capture(parent, width , height, camera);
+    while (cam == null) cam = new Capture(parent, 320, 240, camera);
     cam.start(); 
     
     //OpenCV
@@ -167,7 +167,7 @@ class FaceController{
   private void process() {process(false);}
   private void process(boolean debug){
     //clearAll();
-    println("Process (FaceController)");
+    //println("Process (FaceController)");
     if (cam.available()) {
       background(0);
       cam.read();
@@ -177,7 +177,7 @@ class FaceController{
       img.copyTo();
       
       //Input image
-      println("Cam display");
+      //println("Cam display");
       if (debug) image(img,0,0);
       
       //Fiducial point detection
@@ -298,7 +298,7 @@ class FaceController{
   }
   
   public void getCrop(int x, int y){
-    maskImage = createGraphics(width,height);
+    maskImage = createGraphics(320,240);
     maskImage.beginDraw();
     //maskImage.triangle(30, 480, 256, 30, 480, 480);
     maskImage.beginShape();
@@ -314,7 +314,7 @@ class FaceController{
     // apply mask
     img.mask(maskImage);
     //smoothenEdges(img);
-    image(img, x - getFace().getCenter().x, y - getFace().getCenter().y);
+    image(img, x - getFace().getCenter().x - img.width/2, y - getFace().getCenter().y - img.height/2, img.width*2, img.height*2);
   }
   
   private ArrayList<MatOfPoint2f> detectFacemarks(PImage i) {
@@ -411,15 +411,15 @@ class FaceController{
     face.setPoints(contour, width, height);
     face_shape.endShape(CLOSE);
     
-    println("Building left eyebrow");
+    //println("Building left eyebrow");
     leftEyebrow.setPoints(left_eyebrow, width, height);
-    println("Building right eyebrow");
+    //println("Building right eyebrow");
     rightEyebrow.setPoints(right_eyebrow, width, height);
-    println("Building left eye");
+    //println("Building left eye");
     leftEye.setPoints(left_eye, width, height);
-    println("Building right eye");
+    //println("Building right eye");
     rightEye.setPoints(right_eye, width, height);
-    println("Building mouth");
+    //println("Building mouth");
     mouth.setPoints(mouth_vector, width, height);
     
     if (debug) {
