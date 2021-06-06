@@ -30,4 +30,13 @@ class RealEyebrow extends FShape{
     return null;
   }
   
+  public RealEyebrow copy(){
+    PVector[] contour = new PVector[this.contour.length];
+    arrayCopy(this.contour, contour);
+    
+    RealEyebrow newEyebrow = new RealEyebrow();
+    newEyebrow.setPoints(contour);
+    return newEyebrow;
+  }
+  
 }

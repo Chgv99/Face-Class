@@ -45,6 +45,8 @@ class FaceController{
   
   private Capture cam;
   private CVImage img;
+  private PVector camSize;
+  private PVector cropSize;
   
   PGraphics maskImage;
   
@@ -89,13 +91,18 @@ class FaceController{
   /**
     * Constructor.
     **/
-  public FaceController(PApplet parent, String camera) {this(parent, camera, 0.5, 0.2, 0.1, 0.1);}
-  public FaceController(PApplet parent, String camera, float upper_offset, float lower_offset,  float left_offset, float right_offset){
+  public FaceController(PApplet parent, String camera) {this(parent, camera, 1, 0.5, 0.2, 0.1, 0.1);}
+  public FaceController(PApplet parent, String camera, float size) {
+    this(parent, camera, size, 0.5, 0.2, 0.1, 0.1);
+  }
+  public FaceController(PApplet parent, String camera, float size, float upper_offset, float lower_offset,  float left_offset, float right_offset){
     //Camera
+    camSize = new PVector(640*size, 480*size);
+    cropSize = new PVector(640/size, 480/size);
     cam = null;
-    while (cam == null) cam = new Capture(parent, 320, 240, camera);
-    cam.start(); 
-    
+    //while (cam == null) cam = new Capture(parent, (int)camSize.x, (int)camSize.y, camera); //640, 480
+    lookForCameras(parent, camera, 0, (int)camSize.x, (int)camSize.y);
+    cam.start();
     //OpenCV
     //Loads OPENCV library
     System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -262,6 +269,12 @@ class FaceController{
     return face;
   }
   
+  public RealFace copyFace(){
+    println("Cropping for copy: " + getCrop());
+    println("copyFace face reference: " + face);
+    return face.copy(getStaticCrop());
+  }
+  
   public RealEyebrow getLeftEyebrow(){
     return leftEyebrow;
   }
@@ -297,8 +310,8 @@ class FaceController{
     return Expressions.verticalAmplitude(mouth);
   }
   
-  public void getCrop(int x, int y){
-    maskImage = createGraphics(320,240);
+  public CVImage getCrop(/*int x, int y*/){
+    maskImage = createGraphics((int)camSize.x, (int)camSize.y);  //640, 480
     maskImage.beginDraw();
     //maskImage.triangle(30, 480, 256, 30, 480, 480);
     maskImage.beginShape();
@@ -313,8 +326,36 @@ class FaceController{
     maskImage.endDraw();
     // apply mask
     img.mask(maskImage);
+    return(img);
     //smoothenEdges(img);
-    image(img, x - getFace().getCenter().x - img.width/2, y - getFace().getCenter().y - img.height/2, img.width*2, img.height*2);
+    
+    /*pushStyle();
+    fill(255,0,0);
+    circle(x,y,5);
+    fill(0,255,0);
+    circle(x - getFace().getCenter().x,y - getFace().getCenter().y,5);
+    image(img, x - 320, y - 240, 640, 480);
+    popStyle();*/
+  }
+  
+  public PImage getStaticCrop(/*int x, int y*/){
+    PImage staticImg = img.copy();
+    maskImage = createGraphics((int)camSize.x, (int)camSize.y);  //640, 480
+    maskImage.beginDraw();
+    //maskImage.triangle(30, 480, 256, 30, 480, 480);
+    maskImage.beginShape();
+    //int i = 0;
+    for(PVector p : contour){
+      //print(i);
+      maskImage.vertex(p.x, p.y);
+      //i++;
+    }
+    
+    maskImage.endShape(CLOSE);
+    maskImage.endDraw();
+    // apply mask
+    staticImg.mask(maskImage);
+    return(staticImg);
   }
   
   private ArrayList<MatOfPoint2f> detectFacemarks(PImage i) {
@@ -407,20 +448,20 @@ class FaceController{
     }
     popStyle();
     
-    println("Building face contour");
-    face.setPoints(contour, width, height);
+    //println("Building face contour");
+    face.setPoints(contour);
     face_shape.endShape(CLOSE);
     
     //println("Building left eyebrow");
-    leftEyebrow.setPoints(left_eyebrow, width, height);
+    leftEyebrow.setPoints(left_eyebrow);
     //println("Building right eyebrow");
-    rightEyebrow.setPoints(right_eyebrow, width, height);
+    rightEyebrow.setPoints(right_eyebrow);
     //println("Building left eye");
-    leftEye.setPoints(left_eye, width, height);
+    leftEye.setPoints(left_eye);
     //println("Building right eye");
-    rightEye.setPoints(right_eye, width, height);
+    rightEye.setPoints(right_eye);
     //println("Building mouth");
-    mouth.setPoints(mouth_vector, width, height);
+    mouth.setPoints(mouth_vector);
     
     if (debug) {
       pushStyle();
@@ -438,4 +479,53 @@ class FaceController{
   public void print(){
     face.print();
   }
+  
+  private void lookForCameras(PApplet parent, String cameraName, int cameraIndex, int sizeX, int sizeY){
+    boolean found = false;
+    println("Looking for cameras");
+    String[] cameraList = Capture.list();
+    int start = millis();
+    int current = millis();
+    while (cameraList.length == 0 && (current - start < 10000)){
+      cameraList = Capture.list();
+      current = millis();
+    }
+  
+    println("Cameras found: " + cameraList.length);
+    if (cameraList == null || cameraList.length != 0){
+      for (int i = 0; i < cameraList.length; i++){
+        println("i: " + i + ", " +
+              "name: \"" + cameraList[i] + "\"");
+      }
+      int index = -1;
+      if (cameraName != null){
+        for (int i = 0; i < cameraList.length; i++){
+          if (cameraList[i].equals(cameraName)){
+            index = i;
+            found = true;
+          }
+        }
+        if (!found){
+          println("WARNING: No camera named \"" + cameraName + "\"");
+        }
+      }
+  
+      if (cameraIndex < cameraList.length){
+        index = cameraIndex;
+      }else{
+        println("WARNING: Index bigger than available, using default (0)");
+        index = 0;
+      }
+  
+      found = true;
+  
+      cam = new Capture(parent, sizeX, sizeY, cameraList[index]);
+      println("Using camera " + "i: " + index + ", " +
+              "name: \"" + cameraList[index] + "\"");
+      //cam.start();
+    }else{
+      found = false;
+      throw new java.lang.RuntimeException("No camera can be found");
+    }
+}
 }

@@ -1,5 +1,7 @@
 class RealFace extends FShape{
   
+  PImage img;
+  
   float reference;
   float forehead;
   
@@ -9,11 +11,16 @@ class RealFace extends FShape{
   RealEye rightEye;
   RealMouth mouth;
   
-  PVector[] vertical;
-  PVector chin;
+  //PVector[] vertical;
+  //PVector chin;
   
   public RealFace(){
     
+  }
+  
+  public RealFace(RealEyebrow leftEyebrow, RealEyebrow rightEyebrow, RealEye leftEye, RealEye rightEye, RealMouth mouth, PImage img){
+    this(leftEyebrow, rightEyebrow, leftEye, rightEye, mouth);
+    this.img = img;
   }
   
   public RealFace(RealEyebrow leftEyebrow, RealEyebrow rightEyebrow, RealEye leftEye, RealEye rightEye, RealMouth mouth){
@@ -91,13 +98,13 @@ class RealFace extends FShape{
     mouth.setFace(this);
   }
   
-  public PVector getChin(){
+  /*public PVector getChin(){
     return chin;
-  }
+  }*/
   
-  public void setChin(RealMouth mouth){
+  /*public void setChin(RealMouth mouth){
     chin = contour[0];
-  }
+  }*/
   
   public void print(){
     println("Face: ", this);
@@ -107,7 +114,22 @@ class RealFace extends FShape{
     else println("Eyes: null");
     if (mouth != null) println("Mouth: " + mouth);
     else println("Mouth: null");
-    if (chin != null) println("Chin: " + chin);
-    else println("Chin: null");
+    /*if (chin != null) println("Chin: " + chin);
+    else println("Chin: null");*/
+  }
+  
+  public PImage getImage(){
+    println("img crop copy: " + img);
+    return img;
+  }
+  
+  public RealFace copy(PImage img){
+    println("img reference " + img);
+    //this.img = img;
+    PVector[] contour = new PVector[this.contour.length];
+    arrayCopy(this.contour, contour);
+    RealFace faceCopy = new RealFace(leftEyebrow.copy(), rightEyebrow.copy(), leftEye.copy(), rightEye.copy(), mouth.copy(), img);
+    faceCopy.setPoints(contour);
+    return faceCopy;
   }
 }

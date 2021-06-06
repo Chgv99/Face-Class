@@ -14,4 +14,13 @@ class RealMouth extends FShape{
     return Expressions.isOpen(this);
   }
   
+  public RealMouth copy(){
+    PVector[] contour = new PVector[this.contour.length];
+    arrayCopy(this.contour, contour);
+    
+    RealMouth newMouth = new RealMouth();
+    newMouth.setPoints(contour);
+    return newMouth;
+  }
+  
 }

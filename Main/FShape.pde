@@ -10,9 +10,9 @@ class FShape{
     contour = points;
   }
   
-  public void setPoints(PVector[] contour, float w, float h){
+  public void setPoints(PVector[] contour/*, float w, float h*/){
     setContour(contour);
-    setCenter(Expressions.centerOf(contour, w, h));
+    setCenter(Expressions.centerOf(contour/*, w, h*/));
   }
   
   public PVector[] getContour(){
@@ -38,9 +38,10 @@ class FShape{
   //TODO: calculate the top and bottom points
   public float verticalAmplitude(){
     //return Expressions.distance(contour[0], contour[0]);
-    PVector[] minMax = Expressions.getMinMax(contour, width, height);
+    PVector[] minMax = Expressions.getMinMax(contour);
     return minMax[1].y - minMax[0].y;
   }
+  
   /*
   public PVector[] getShape(){
     return contour;

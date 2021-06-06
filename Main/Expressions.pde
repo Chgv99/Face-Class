@@ -28,16 +28,16 @@ static class Expressions{
     */
   public static boolean eyebrowIsLifted(RealEyebrow eyebrow){
     if (eyebrow != null) {
-      println("distancia centro-ceja = " + (eyebrow.getFace().getCenter().y - eyebrow.getTop().y));
+      //println("distancia centro-ceja = " + (eyebrow.getFace().getCenter().y - eyebrow.getTop().y));
       if (eyebrow.getFace().getCenter().y - eyebrow.getTop().y > 50) return true;
     }
     return false;
   }
   
-  public static PVector[] getMinMax(PVector[] contour, float w, float h){
+  public static PVector[] getMinMax(PVector[] contour/*, float w, float h*/){
     //println("Contour: "+ (Object[])contour);
     PVector max = new PVector(0, 0);
-    PVector min = new PVector(w, h);
+    PVector min = new PVector(10000, 10000);
     for (PVector point : contour){
       //println("Point: " + point);
       if (point.x > max.x) max.x = point.x;
@@ -49,20 +49,20 @@ static class Expressions{
     return new PVector[]{min, max};
   }
   
-  public static PVector centerOf(PVector[] contour, float w, float h){
+  public static PVector centerOf(PVector[] contour/*, float w, float h*/){
     if (contour != null){
       /**PVector max = contour[0];
       PVector min = contour[0];**/
-      PVector[] minMax = getMinMax(contour, w, h);
+      PVector[] minMax = getMinMax(contour/*, w, h*/);
       return new PVector(minMax[0].x + ((minMax[1].x - minMax[0].x) / 2), minMax[0].y + ((minMax[1].y - minMax[0].y) / 2));//new Point(min.x + d/2, min.y + d/2);
     }
     return null;
   }
   
   public static float distance(FShape a, FShape b){
-    println("FShape a = " + a.getCenter());
-    println("FShape b = " + b.getCenter());
-    println(dist(a.getCenter().x, a.getCenter().y, b.getCenter().x, b.getCenter().y));
+    //println("FShape a = " + a.getCenter());
+    //println("FShape b = " + b.getCenter());
+    //println(dist(a.getCenter().x, a.getCenter().y, b.getCenter().x, b.getCenter().y));
     return dist(a.getCenter().x, a.getCenter().y, b.getCenter().x, b.getCenter().y);
   }
   
@@ -78,10 +78,10 @@ static class Expressions{
     return calibrationFactor / reference;
   }
   
-  public static float rotationOf(RealFace face){
+  /*public static float rotationOf(RealFace face){
     PVector line = PVector.sub(face.getCenter(),face.getChin());
     return PVector.angleBetween(line, new PVector(10,0));
-  }
+  }*/
   
   public static PVector makeRelative(PVector v, PVector center){
     return PVector.sub(v, center);
