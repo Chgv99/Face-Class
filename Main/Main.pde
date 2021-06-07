@@ -34,7 +34,7 @@ RealFace faceCopy;
 PImage img1;
 PVector img1Pos;   
 
-float resFactor;
+//float resFactor;
 
 void setup() {
   size(640, 480);
@@ -43,12 +43,12 @@ void setup() {
   smooth = true;
   cal_i = 0;
   
-  resFactor = 0.5;
+  //resFactor = 0.5;
   
   position = new Point(width/2, height/2);
   
   //player_face = new Face(this, "DroidCam Source 3", 0.5f, 0.2f, 0.1f, 0.1f);
-  faceController = new FaceController(this, "DroidCam Source 3", resFactor);
+  faceController = new FaceController(this, "DroidCam Source 3", 0.35);
   faceController.process();
   /*println("Initial values:");
   println("Face Center: " + faceController.getFace().getCenter());
@@ -65,6 +65,7 @@ void setup() {
 }
 
 void draw() {  
+  background(0);
   faceController.process(debug);
   //faceController.print();
   if (leftEyeCopy != null && rightEyeCopy != null && faceCopy != null) {
@@ -73,8 +74,6 @@ void draw() {
     println("Copy of right eye: " + rightEyeCopy.getCenter().x + ", " + rightEyeCopy.getCenter().y);
     println("draw face copy reference: " + faceCopy);
     image(img1, img1Pos.x, img1Pos.y);
-  } else {
-    println("Copies are null mate");
   }
   pushStyle();
   fill(0,0,0,127);
@@ -138,7 +137,7 @@ void draw() {
           115);
   } else {
     CVImage img = faceController.getCrop(/*(int)position.x,(int)position.y*/);
-    image(img, (float)position.x - faceController.getCenter().x / resFactor, (float)position.y - faceController.getCenter().y / resFactor, 640, 480);
+    image(img, (float)position.x - faceController.getCenter().x / faceController.getCamSize(), (float)position.y - faceController.getCenter().y / faceController.getCamSize(), 640, 480);
     //image(img, width/2, height/2);
     pushStyle();
     fill(255,0,255);

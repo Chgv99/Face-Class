@@ -17,7 +17,8 @@ static class Expressions{
   }
   
   public static boolean isOpen(FShape shape){
-    if (verticalAmplitude(shape) > 25) return true;
+    println(verticalAmplitude(shape) / shape.getCamSize());
+    if (verticalAmplitude(shape) / shape.getCamSize() > 25) return true;
     return false;
   }
   

@@ -3,11 +3,17 @@ class FShape{
   protected PVector[] contour;
   protected PVector center;
   //protected PShape contourShape;
+  protected float camSize;
   
   public FShape(){}
   
-  public FShape(PVector[] points){
+  public FShape(PVector[] points, float camSize){
     contour = points;
+    this.camSize = camSize;
+  }
+  
+  public float getCamSize(){
+    return camSize;
   }
   
   public void setPoints(PVector[] contour/*, float w, float h*/){

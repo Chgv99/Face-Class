@@ -57,45 +57,45 @@ class RealFace extends FShape{
     return leftEyebrow;
   }
   
-  public void setLeftEyebrow(RealEyebrow leftEyebrow){
+  public void setLeftEyebrow(RealEyebrow leftEyebrow, float camSize){
     this.leftEyebrow = leftEyebrow;
-    leftEyebrow.setFace(this);
+    leftEyebrow.setFace(this, camSize);
   }
   
   public RealEyebrow getRightEyebrow(){
     return rightEyebrow;
   }
   
-  public void setRightEyebrow(RealEyebrow rightEyebrow){
+  public void setRightEyebrow(RealEyebrow rightEyebrow, float camSize){
     this.rightEyebrow = rightEyebrow;
-    rightEyebrow.setFace(this);
+    rightEyebrow.setFace(this, camSize);
   }
   
   public RealEye getLeftEye(){
     return leftEye;
   }
   
-  public void setLeftEye(RealEye leftEye){
+  public void setLeftEye(RealEye leftEye, float camSize){
     this.leftEye = leftEye;
-    leftEye.setFace(this);
+    leftEye.setFace(this, camSize);
   }
   
   public RealEye getRightEye(){
     return rightEye;
   }
   
-  public void setRightEye(RealEye rightEye){
+  public void setRightEye(RealEye rightEye, float camSize){
     this.rightEye = rightEye;
-    rightEye.setFace(this);
+    rightEye.setFace(this, camSize);
   }
   
   public RealMouth getMouth(){
     return mouth;
   }
   
-  public void setMouth(RealMouth mouth){
+  public void setMouth(RealMouth mouth, float camSize){
     this.mouth = mouth;
-    mouth.setFace(this);
+    mouth.setFace(this, camSize);
   }
   
   /*public PVector getChin(){

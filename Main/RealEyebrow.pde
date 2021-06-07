@@ -10,8 +10,9 @@ class RealEyebrow extends FShape{
     return face;
   }
   
-  public void setFace(RealFace face){
+  public void setFace(RealFace face, float camSize){
     this.face = face;
+    this.camSize = camSize;
   }
   
   public PVector getTop(){

@@ -88,20 +88,25 @@ class FaceController{
   private float mouth_amplitude;
   private float mouth_threshold;
   
+  private float size;
+  
   /**
     * Constructor.
     **/
-  public FaceController(PApplet parent, String camera) {this(parent, camera, 1, 0.5, 0.2, 0.1, 0.1);}
+  public FaceController(PApplet parent, String camera) {
+    this(parent, camera, 1, 0.5, 0.2, 0.1, 0.1);
+  }
   public FaceController(PApplet parent, String camera, float size) {
     this(parent, camera, size, 0.5, 0.2, 0.1, 0.1);
   }
   public FaceController(PApplet parent, String camera, float size, float upper_offset, float lower_offset,  float left_offset, float right_offset){
     //Camera
+    this.size = size;
     camSize = new PVector(640*size, 480*size);
     cropSize = new PVector(640/size, 480/size);
     cam = null;
     //while (cam == null) cam = new Capture(parent, (int)camSize.x, (int)camSize.y, camera); //640, 480
-    lookForCameras(parent, camera, 0, (int)camSize.x, (int)camSize.y);
+    lookForCameras(parent, camera, 1, (int)camSize.x, (int)camSize.y);
     cam.start();
     //OpenCV
     //Loads OPENCV library
@@ -130,11 +135,11 @@ class FaceController{
     rightEye = new RealEye();
     mouth = new RealMouth();
     
-    face.setLeftEyebrow(leftEyebrow);
-    face.setRightEyebrow(rightEyebrow);
-    face.setLeftEye(leftEye);
-    face.setRightEye(rightEye);
-    face.setMouth(mouth);
+    face.setLeftEyebrow(leftEyebrow, size);
+    face.setRightEyebrow(rightEyebrow, size);
+    face.setLeftEye(leftEye, size);
+    face.setRightEye(rightEye, size);
+    face.setMouth(mouth, size);
     
     //Variables
     this.upper_offset = upper_offset;
@@ -158,30 +163,23 @@ class FaceController{
     //buffer_size = 1;
   }
   
-  /*private void clearAll(){
-    contour.clear();
-    left_eyebrow.clear();
-    right_eyebrow.clear();
-    left_eye.clear();
-    right_eye.clear();
-    mouth_vector.clear();
-  }*/
-  
   /** Updates the values of the points 
       *  and, by extension, the rest of values
       *  needed to work with the class. 
       * (call every frame)**/
-  private void process() {process(false);}
-  private void process(boolean debug){
+  private boolean process() { return process(false); }
+  private boolean process(boolean debug){
     //clearAll();
     //println("Process (FaceController)");
-    if (cam.available()) {
-      background(0);
+    boolean available = cam.available();
+    if (available) {
+      //background(0);
       cam.read();
       
       //Get image from cam
       img.copy(cam, 0, 0, cam.width, cam.height, 0, 0, img.width, img.height);
       img.copyTo();
+      
       
       //Input image
       //println("Cam display");
@@ -203,10 +201,12 @@ class FaceController{
       //face_distance_cm = 2900 / face_distance_units;
       //println("Calculating mouth amplitude?");
       //mouth_amplitude = distance(mouth_max_x, mouth_max_y, mouth_min_x, mouth_min_y) / face_distance_units;
+        
+      
+      //If calibration enabled
+      //if (cal_buffer_size > -1) Calibrate();
     }
-    
-    //If calibration enabled
-    //if (cal_buffer_size > -1) Calibrate();
+    return available;
   }
   
   /** Calibration consists of a process in which
@@ -264,99 +264,6 @@ class FaceController{
       return true;
     }
   }*/
-  
-  public RealFace getFace(){
-    return face;
-  }
-  
-  public RealFace copyFace(){
-    println("Cropping for copy: " + getCrop());
-    println("copyFace face reference: " + face);
-    return face.copy(getStaticCrop());
-  }
-  
-  public RealEyebrow getLeftEyebrow(){
-    return leftEyebrow;
-  }
-  
-  public RealEyebrow getRightEyebrow(){
-    return rightEyebrow;
-  }
-  
-  public RealEye getLeftEye(){
-    return leftEye;
-  }
-  
-  public RealEye getRightEye(){
-    return rightEye;
-  }
-  
-  public RealMouth getMouth(){
-    return mouth;
-  }
-  
-  public float getDistance(){
-    return Expressions.distanceFromCamera(2900, face.getReference());
-  }
-  /*public float getDistanceFromCamera(){
-    return Expressions.distanceFromCamera(2900, face.getReference());
-  }*/
-  
-  public PVector getCenter(){
-    return face.getCenter();
-  }
-  
-  public float getMouthAmplitude(){
-    return Expressions.verticalAmplitude(mouth);
-  }
-  
-  public CVImage getCrop(/*int x, int y*/){
-    maskImage = createGraphics((int)camSize.x, (int)camSize.y);  //640, 480
-    maskImage.beginDraw();
-    //maskImage.triangle(30, 480, 256, 30, 480, 480);
-    maskImage.beginShape();
-    //int i = 0;
-    for(PVector p : contour){
-      //print(i);
-      maskImage.vertex(p.x, p.y);
-      //i++;
-    }
-    
-    maskImage.endShape(CLOSE);
-    maskImage.endDraw();
-    // apply mask
-    img.mask(maskImage);
-    return(img);
-    //smoothenEdges(img);
-    
-    /*pushStyle();
-    fill(255,0,0);
-    circle(x,y,5);
-    fill(0,255,0);
-    circle(x - getFace().getCenter().x,y - getFace().getCenter().y,5);
-    image(img, x - 320, y - 240, 640, 480);
-    popStyle();*/
-  }
-  
-  public PImage getStaticCrop(/*int x, int y*/){
-    PImage staticImg = img.copy();
-    maskImage = createGraphics((int)camSize.x, (int)camSize.y);  //640, 480
-    maskImage.beginDraw();
-    //maskImage.triangle(30, 480, 256, 30, 480, 480);
-    maskImage.beginShape();
-    //int i = 0;
-    for(PVector p : contour){
-      //print(i);
-      maskImage.vertex(p.x, p.y);
-      //i++;
-    }
-    
-    maskImage.endShape(CLOSE);
-    maskImage.endDraw();
-    // apply mask
-    staticImg.mask(maskImage);
-    return(staticImg);
-  }
   
   private ArrayList<MatOfPoint2f> detectFacemarks(PImage i) {
     ArrayList<MatOfPoint2f> shapes = new ArrayList<MatOfPoint2f>();
@@ -519,7 +426,7 @@ class FaceController{
   
       found = true;
   
-      cam = new Capture(parent, sizeX, sizeY, cameraList[index]);
+      cam = new Capture(parent, sizeX, sizeY, cameraList[index], 15);
       println("Using camera " + "i: " + index + ", " +
               "name: \"" + cameraList[index] + "\"");
       //cam.start();
@@ -527,5 +434,86 @@ class FaceController{
       found = false;
       throw new java.lang.RuntimeException("No camera can be found");
     }
-}
+  }
+  
+  public CVImage getCrop(){
+    maskImage = createGraphics((int)camSize.x, (int)camSize.y);  //640, 480
+    maskImage.beginDraw();
+    maskImage.beginShape();
+    for(PVector p : contour){
+      maskImage.vertex(p.x, p.y);
+    }
+    
+    maskImage.endShape(CLOSE);
+    maskImage.endDraw();
+    // apply mask
+    img.mask(maskImage);
+    return(img);
+  }
+  
+  public PImage getStaticCrop(){
+    PImage staticImg = img.copy();
+    maskImage = createGraphics((int)camSize.x, (int)camSize.y);  //640, 480
+    maskImage.beginDraw();
+    maskImage.beginShape();
+    for(PVector p : contour){
+      maskImage.vertex(p.x, p.y);
+    }
+    
+    maskImage.endShape(CLOSE);
+    maskImage.endDraw();
+    // apply mask
+    staticImg.mask(maskImage);
+    return(staticImg);
+  }
+  
+  public float getCamSize() {
+    return size;
+  }
+  
+  public RealFace getFace(){
+    return face;
+  }
+  
+  public RealFace copyFace(){
+    println("Cropping for copy: " + getCrop());
+    println("copyFace face reference: " + face);
+    return face.copy(getStaticCrop());
+  }
+  
+  public RealEyebrow getLeftEyebrow(){
+    return leftEyebrow;
+  }
+  
+  public RealEyebrow getRightEyebrow(){
+    return rightEyebrow;
+  }
+  
+  public RealEye getLeftEye(){
+    return leftEye;
+  }
+  
+  public RealEye getRightEye(){
+    return rightEye;
+  }
+  
+  public RealMouth getMouth(){
+    return mouth;
+  }
+  
+  public float getDistance(){
+    return Expressions.distanceFromCamera(2900, face.getReference());
+  }
+  
+  /*public float getDistanceFromCamera(){
+    return Expressions.distanceFromCamera(2900, face.getReference());
+  }*/
+  
+  public PVector getCenter(){
+    return face.getCenter();
+  }
+  
+  public float getMouthAmplitude(){
+    return Expressions.verticalAmplitude(mouth);
+  }
 }
