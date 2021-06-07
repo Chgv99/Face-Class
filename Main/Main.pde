@@ -7,7 +7,8 @@
 *  Fix mouth (rebuild)*/
 
 import java.lang.*;
-
+import cvimage.*;
+import org.opencv.core.*;
 FaceController faceController;
 RealFace playerFace;
 
@@ -49,7 +50,8 @@ void setup() {
   
   //player_face = new Face(this, "DroidCam Source 3", 0.5f, 0.2f, 0.1f, 0.1f);
   faceController = new FaceController(this, "DroidCam Source 3", 0.35);
-  faceController.process();
+  //faceController = new FaceController(this, "Trust Webcam", 0.35);
+  //faceController.process();
   /*println("Initial values:");
   println("Face Center: " + faceController.getFace().getCenter());
   println("Left Eyebrow (Relative): " + (playerFace.getLeftEyebrow().getTop().x) +
@@ -66,93 +68,28 @@ void setup() {
 
 void draw() {  
   background(0);
-  faceController.process(debug);
+  boolean available = faceController.process(debug);
   //faceController.print();
-  if (leftEyeCopy != null && rightEyeCopy != null && faceCopy != null) {
+  /*if (leftEyeCopy != null && rightEyeCopy != null && faceCopy != null) {
     println("Copy of face: " + faceCopy.getCenter().x + ", " + faceCopy.getCenter().y);
     println("Copy of left eye: " + leftEyeCopy.getCenter().x + ", " + leftEyeCopy.getCenter().y);
     println("Copy of right eye: " + rightEyeCopy.getCenter().x + ", " + rightEyeCopy.getCenter().y);
     println("draw face copy reference: " + faceCopy);
     image(img1, img1Pos.x, img1Pos.y);
-  }
-  pushStyle();
-  fill(0,0,0,127);
-  rect(width-10-205, 10, 205, 20); //aumentar de 15 en 15?
-  popStyle();
+  }*/
+  //println(faceController.getFace());
   
-  textAlign(RIGHT);
-  textSize(10);
-  text("[D] Debug  [O] Outlines  [S] Smoothness", width-15, 25);
-
+  //faceController.getFace().print();
+  //println(faceController.getFace().getContour());
+  PImage img = faceController.getCrop();
+  //println(img);
+  image(img, (float)position.x - faceController.getCenter().x / faceController.getCamSize(), (float)position.y - faceController.getCenter().y / faceController.getCamSize(), 640, 480);
   
-  //Get eyes relatively from the center of the face
-  //leftEye = Expressions.makeRelative(faceController.getLeftEye().getCenter(), faceController.getFace().getCenter());
-  //rightEye = Expressions.makeRelative(faceController.getRightEye().getCenter(), faceController.getFace().getCenter());
-  
-  //leftEye = faceController.getLeftEye().getCenter();
-  //rightEye = faceController.getRightEye().getCenter();
-  
-  circle(mouseX, mouseY, 20);
-  
-  if (debug) {
-    pushStyle();
-    fill(0,0,0,127);
-    rect(10, 10, 250, 110); //aumentar de 15 en 15?
-    popStyle();
-    textAlign(LEFT);
-    textSize(10);
-    text("Face Distance: " + nf(faceController.getDistance(),0,2) +
-         " cm (" + nf(faceController.getFace().getReference(),0,2) + " units)", 
-         15, 
-         25);
-    text("Face Center: " + nf(faceController.getCenter().x,0,2) +
-         ", " + nf(faceController.getCenter().y,0,2), 
-         15, 
-         40);
-    text("Left Eyebrow (Relative): " + 
-          nf(Expressions.makeRelative(faceController.getLeftEyebrow().getTop(), faceController.getCenter()).x,0,2) +
-          ", " + 
-          nf(Expressions.makeRelative(faceController.getLeftEyebrow().getTop(), faceController.getCenter()).y,0,2) + 
-          " (" + Expressions.eyebrowIsLifted(faceController.getLeftEyebrow()) + ")",
-          15,
-          55);
-    text("Right Eyebrow (Relative): " + 
-          nf(Expressions.makeRelative(faceController.getRightEyebrow().getTop(), faceController.getCenter()).x,0,2) +
-          ", " + 
-          nf(Expressions.makeRelative(faceController.getRightEyebrow().getTop(), faceController.getCenter()).y,0,2) + 
-          " (" + Expressions.eyebrowIsLifted(faceController.getRightEyebrow()) + ")",
-          15,
-          70);
-    text("Left Eye (Relative): " + nf(Expressions.makeRelative(faceController.getLeftEye().getCenter(), faceController.getCenter()).x,0,2) +
-          ", " + nf(Expressions.makeRelative(faceController.getLeftEye().getCenter(), faceController.getCenter()).y,0,2),
-          15,
-          85);
-    text("Right Eye (Relative): " + nf(Expressions.makeRelative(faceController.getRightEye().getCenter(), faceController.getCenter()).x,0,2) +
-          ", " + nf(Expressions.makeRelative(faceController.getRightEye().getCenter(), faceController.getCenter()).y,0,2),
-          15,
-          100);
-    text("Mouth Amplitude: " + faceController.getMouth().verticalAmplitude() +
-          " (" + faceController.getMouth().isOpen() + ")", 
-          15, 
-          115);
-  } else {
-    CVImage img = faceController.getCrop(/*(int)position.x,(int)position.y*/);
-    image(img, (float)position.x - faceController.getCenter().x / faceController.getCamSize(), (float)position.y - faceController.getCenter().y / faceController.getCamSize(), 640, 480);
-    //image(img, width/2, height/2);
-    pushStyle();
-    fill(255,0,255);
-    noStroke();
-    //circle((float)position.x + (float)faceController.getLeftEye().x, (float)position.y + (float)left_eye.y, 10);
-    popStyle();//faceController.;
-  }
-  
-  //println("Mouth: ", faceController.getMouth().getContour());
-  if (Expressions.isOpen(faceController.getMouth())){
-    pushStyle();
-    fill(255,0,0);
-    noStroke();
-    rect((float)position.x-25, (float)position.y,50, 500);
-    popStyle();
+  if (faceCopy != null) {
+    /*println("Copy of face: " + faceCopy.getCenter().x + ", " + faceCopy.getCenter().y);
+    println("draw face copy reference: " + faceCopy);
+    println(img1);*/
+    image(img1, img1Pos.x, img1Pos.y);
   }
 }
 
@@ -205,11 +142,13 @@ void keyReleased(){
     }
     if (keyCode == ' '){
       faceCopy = faceController.copyFace();
-      img1 = faceCopy.getImage();
+      //println("espacio");
+      //println(faceCopy.getCrop());
+      img1 = faceCopy.getCrop();
       img1Pos = new PVector(random(0,100),random(0,100));
-      println(faceCopy);
-      leftEyeCopy = faceController.getLeftEye().copy();
-      rightEyeCopy = faceController.getRightEye().copy();
+      //println(faceCopy);
+      //leftEyeCopy = faceController.getLeftEye().copy();
+      //rightEyeCopy = faceController.getRightEye().copy();
     }
   }
 }

@@ -1,7 +1,5 @@
 class RealFace extends FShape{
   
-  PImage img;
-  
   float reference;
   float forehead;
   
@@ -20,7 +18,6 @@ class RealFace extends FShape{
   
   public RealFace(RealEyebrow leftEyebrow, RealEyebrow rightEyebrow, RealEye leftEye, RealEye rightEye, RealMouth mouth, PImage img){
     this(leftEyebrow, rightEyebrow, leftEye, rightEye, mouth);
-    this.img = img;
   }
   
   public RealFace(RealEyebrow leftEyebrow, RealEyebrow rightEyebrow, RealEye leftEye, RealEye rightEye, RealMouth mouth){
@@ -33,16 +30,54 @@ class RealFace extends FShape{
     setVertical();
   }
   
-  /*public float getReference(){
-    return reference;
-  }*/
+  @Override
+  public void setPoints(PVector[] contour, PImage img, int cam_x, int cam_y){
+    setContour(contour);
+    setCenter(Expressions.centerOf(contour));
+    setCrop(img, cam_x, cam_y);
+    setReference();
+  }
+  
+  public RealFace copy(PImage img, int cam_x, int cam_y){
+    //println("img reference " + img);
+    //this.img = img;
+    PVector[] contour = new PVector[this.contour.length];
+    arrayCopy(this.contour, contour);
+    RealFace faceCopy = new RealFace(leftEyebrow.copy(img, cam_x, cam_y), rightEyebrow.copy(img, cam_x, cam_y), leftEye.copy(img, cam_x, cam_y), rightEye.copy(img, cam_x, cam_y), mouth.copy(img, cam_x, cam_y), img);
+    faceCopy.setPoints(contour, img, (int)cam_x, (int)cam_y);
+    return faceCopy;
+  }
+  
+  public void print(){
+    println("Face: ", this);
+    if (contour != null) {
+      println("Contour: ");
+      for (PVector p : contour){
+        println(p.x + ", " + p.y);
+      }
+    } else {
+      println("Contour: null");
+    }
+    if (leftEyebrow != null && rightEyebrow != null) println("Eyebrows: " + leftEyebrow + ", " + rightEyebrow);
+    else println("Eyebrows: null");
+    if (leftEye != null && rightEye != null) println("Eye: " + leftEye + ", " + rightEye);
+    else println("Eyes: null");
+    if (mouth != null) println("Mouth: " + mouth);
+    else println("Mouth: null");
+    /*if (chin != null) println("Chin: " + chin);
+    else println("Chin: null");*/
+  }
   
   public float getReference(){
-    return Expressions.distance(leftEye, rightEye);
+    return reference;
   }
   
   public void setReference(){
-    reference = Expressions.distance(leftEye, rightEye);
+    if (leftEye.getCenter() != null && rightEye.getCenter() != null){
+      reference = Expressions.distance(leftEye, rightEye);
+    } else {
+      reference = -1;
+    }
   }
   
   public PVector[] getVertical(){
@@ -106,30 +141,8 @@ class RealFace extends FShape{
     chin = contour[0];
   }*/
   
-  public void print(){
-    println("Face: ", this);
-    if (leftEyebrow != null && rightEyebrow != null) println("Eyebrows: " + leftEyebrow + ", " + rightEyebrow);
-    else println("Eyebrows: null");
-    if (leftEye != null && rightEye != null) println("Eye: " + leftEye + ", " + rightEye);
-    else println("Eyes: null");
-    if (mouth != null) println("Mouth: " + mouth);
-    else println("Mouth: null");
-    /*if (chin != null) println("Chin: " + chin);
-    else println("Chin: null");*/
-  }
-  
-  public PImage getImage(){
-    println("img crop copy: " + img);
+  /*public PImage getImage(){
+    //println("img crop copy: " + img);
     return img;
-  }
-  
-  public RealFace copy(PImage img){
-    println("img reference " + img);
-    //this.img = img;
-    PVector[] contour = new PVector[this.contour.length];
-    arrayCopy(this.contour, contour);
-    RealFace faceCopy = new RealFace(leftEyebrow.copy(), rightEyebrow.copy(), leftEye.copy(), rightEye.copy(), mouth.copy(), img);
-    faceCopy.setPoints(contour);
-    return faceCopy;
-  }
+  }*/
 }

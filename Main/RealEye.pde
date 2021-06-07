@@ -15,12 +15,12 @@ class RealEye extends FShape{
     return Expressions.isOpen(this);
   }
   
-  public RealEye copy(){
+  public RealEye copy(PImage img, int cam_x, int cam_y){
     PVector[] contour = new PVector[this.contour.length];
     arrayCopy(this.contour, contour);
     
     RealEye newEye = new RealEye();
-    newEye.setPoints(contour);
+    newEye.setPoints(contour, img, (int)cam_x, (int)cam_y);
     return newEye;
   }
   

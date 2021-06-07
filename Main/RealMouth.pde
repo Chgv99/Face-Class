@@ -15,12 +15,12 @@ class RealMouth extends FShape{
     return Expressions.isOpen(this);
   }
   
-  public RealMouth copy(){
+  public RealMouth copy(PImage img, int cam_x, int cam_y){
     PVector[] contour = new PVector[this.contour.length];
     arrayCopy(this.contour, contour);
     
     RealMouth newMouth = new RealMouth();
-    newMouth.setPoints(contour);
+    newMouth.setPoints(contour, img, (int)cam_x, (int)cam_y);
     return newMouth;
   }
   
