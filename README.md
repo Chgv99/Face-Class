@@ -70,14 +70,13 @@ First of all you'll need to import the class into your project.
 
 To make use of the Face class you just need to create an object of the Face class and call *Process()* every frame. See [methods]() for more info.
 
-##
+
 ```processing
 FaceController fc;
 
 void setup() {
   size(640, 480);
   fc = new FaceController(this, "Camera Name");
-  
   //You can also call process() inside setup();
 }
 
@@ -85,9 +84,13 @@ void draw() {
   background(0);
   fc.process();
   PImage faceImg = fc.getFaceCrop();
-  image(faceImg, width/2, height/2, faceImg.width, faceImg.height);
+  image(faceImg, width/2 - faceImg.width/2, height/2 - faceImg.height/2, faceImg.width, faceImg.height);
 }
 ```
+<p align="center">
+ <i>An example of how to draw a face crop in the middle of the canvas.</i>
+</p>
+
 Check out more [examples]().
 
 
