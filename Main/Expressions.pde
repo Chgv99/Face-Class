@@ -17,7 +17,7 @@ static class Expressions{
   }
   
   public static boolean isOpen(FShape shape){
-    println(verticalAmplitude(shape) / shape.getCamSize());
+    //println(verticalAmplitude(shape) / shape.getCamSize());
     if (verticalAmplitude(shape) / shape.getCamSize() > 25) return true;
     return false;
   }
@@ -48,6 +48,31 @@ static class Expressions{
     }
     
     return new PVector[]{min, max};
+  }
+  
+  public static PVector[] getCorners(PVector[] contour/*, float w, float h*/){
+    //println("Contour: "+ (Object[])contour);
+    PVector topLeft = new PVector(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    PVector topRight = new PVector(0, Integer.MAX_VALUE);
+    PVector bottomLeft = new PVector(Integer.MAX_VALUE, 0);
+    PVector bottomRight = new PVector(0, 0);
+    
+    for (PVector point : contour){
+      //println("Point: " + point);
+      if (point.x < topLeft.x) topLeft.x = point.x;
+      if (point.y < topLeft.y) topLeft.y = point.y;
+      
+      if (point.x > topRight.x) topRight.x = point.x;
+      if (point.y < topRight.y) topRight.y = point.y;
+      
+      if (point.x < bottomLeft.x) bottomLeft.x = point.x;
+      if (point.y > bottomLeft.y) bottomLeft.y = point.y;
+      
+      if (point.x > bottomRight.x) bottomRight.x = point.x;
+      if (point.y > bottomRight.y) bottomRight.y = point.y;
+    }
+    
+    return new PVector[]{topLeft, topRight, bottomLeft, bottomRight};
   }
   
   public static PVector centerOf(PVector[] contour/*, float w, float h*/){

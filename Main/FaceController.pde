@@ -1,4 +1,5 @@
 /** TODO
+  * REVISAR MÉTODOS DEL README UNO A UNO Y COMPROBAR QUE FUNCIONAN A LA PERFECCIÓN
   * Devolver coordenadas de los elementos faciales (boca, cejas)
   * Para ello deberá usarse una coordenada relativa al
   * centro de la cara (center), para mayor facilidad de uso.
@@ -53,10 +54,10 @@ class FaceController{
   //FACE
   //Point v1, v2, v3, v4;  //Face vertices
   private float face_distance_units, face_distance_cm;
-  private float upper_offset;
-  private float lower_offset;
-  private float left_offset;
-  private float right_offset;
+  private float upperOffset;
+  private float lowerOffset;
+  private float leftOffset;
+  private float rightOffset;
   
   //Eyebrows
   private RealEyebrow leftEyebrow;
@@ -90,6 +91,8 @@ class FaceController{
   
   private float size;
   
+  private float defaultRef = 20;
+  
   /**
     * Constructor.
     **/
@@ -99,7 +102,7 @@ class FaceController{
   public FaceController(PApplet parent, String camera, float size) {
     this(parent, camera, size, 0.5, 0.2, 0.1, 0.1);
   }
-  public FaceController(PApplet parent, String camera, float size, float upper_offset, float lower_offset,  float left_offset, float right_offset){
+  public FaceController(PApplet parent, String camera, float size, float upperOffset, float lowerOffset,  float leftOffset, float rightOffset){
     //Camera
     this.size = size;
     camSize = new PVector(640*size, 480*size);
@@ -142,10 +145,10 @@ class FaceController{
     face.setMouth(mouth, size);
     
     //Variables
-    this.upper_offset = upper_offset;
-    this.lower_offset = lower_offset;
-    this.left_offset = left_offset;
-    this.right_offset = right_offset;
+    this.upperOffset = upperOffset;
+    this.lowerOffset = lowerOffset;
+    this.leftOffset = leftOffset;
+    this.rightOffset = rightOffset;
     
     /** Natural variables. (default values) 
       * These are the natural values of a 
@@ -175,7 +178,7 @@ class FaceController{
     /*while (!available) {
       available = cam.available();
     }*/
-    println("available: " + available);
+    //println("available: " + available);
     if (available) {
       //background(0);
       cam.read();
@@ -193,7 +196,7 @@ class FaceController{
     
     //Fiducial point detection
     //Facial elements update
-    println("1");
+    //println("1");
     available = false;
     ArrayList<MatOfPoint2f> shapes = detectFacemarks(img);
     PVector origin = new PVector(0, 0);
@@ -280,7 +283,7 @@ class FaceController{
   }
   
   private void updateFacialElements(Point [] p, PVector o, boolean debug) {
-    println("updatefacialelements");
+    //println("updatefacialelements");
     pushStyle();
     noStroke();
     noFill();
@@ -344,7 +347,7 @@ class FaceController{
       if (getFace().getReference() != -1) {
         println("no -1");
         println(getFace().getReference());
-        forehead_factor = getFace().getReference() * upper_offset;
+        forehead_factor = getFace().getReference() * upperOffset;
       }
       contour[17+26-i] = new PVector((float)p[i].x+o.x, (float)p[i].y+o.y - forehead_factor);
       stroke(0,0,0);
@@ -458,7 +461,11 @@ class FaceController{
     }
   }
   
-  public PImage getCrop(){
+  public float getReference() {
+    return face.getReference()/defaultRef;
+  }
+  
+  public PImage getFaceCrop(){
     return face.getCrop();
     
     /*maskImage = createGraphics((int)camSize.x, (int)camSize.y);  //640, 480
@@ -486,7 +493,7 @@ class FaceController{
   public PImage getRightEyeCrop(){
     return rightEye.getCrop();
   }
-  
+
   /*public PImage getStaticCrop(){
     PImage staticImg = img.copy();
     maskImage = createGraphics((int)camSize.x, (int)camSize.y);  //640, 480
@@ -503,8 +510,12 @@ class FaceController{
     return(staticImg);
   }*/
   
-  public float getCamSize() {
+  public float getCamScale() {
     return size;
+  }
+  
+  public PVector getCamSize() {
+    return new PVector(cam.width, cam.height);
   }
   
   public RealFace getFace(){
@@ -514,7 +525,7 @@ class FaceController{
   public RealFace copyFace(){
     //println("Cropping for copy: " + getCrop());
     //println("copyFace face reference: " + face);
-    return face.copy(getCrop(), (int)camSize.x, (int)camSize.y);
+    return face.copy(getFaceCrop(), (int)camSize.x, (int)camSize.y);
   }
   
   public RealEyebrow getLeftEyebrow(){
