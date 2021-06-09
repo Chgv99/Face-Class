@@ -80,7 +80,7 @@ void draw() {
 | FaceController (overloaded)  | Constructor | Defines the face object | <ul><li>PApplet parent (normally *this*)</li><li>String camera</li><li>float size</li></ul> |
 | FaceController (overloaded)   | Constructor | Defines the face object | <ul><li>PApplet parent (normally *this*)</li><li>String camera</li><li>float size</li><li>float upperOffset</li><li>float lowerOffset</li><li>float leftOffset</li><li>float rightOffset</li></ul> |
 | process | boolean | Updates face variables using camera's output. Returns if the camera was available or not. |
-| process (overloaded) | boolean | Updates face variables using camera's output | boolean debug |
+| process (overloaded) | boolean | Updates face variables using camera's output. Returns if the camera was available or not. | boolean debug |
 | getCamScale | float | Returns the scale of the camera |
 | getCamSize | PVector | Returns the original size of the camera |
 | getCenter | PVector | Returns the coordinates of the center of the face |
