@@ -38,12 +38,26 @@
 
 # Features
 
-You'll be able to receive useful data from your webcam for your project.
+You'll be able to receive useful data easily from your webcam and use it in your own [Processing](https://processing.org/) project.
 
-<!--The current version contains the following features:
-1. Hey
-2.
-3.-->
+<details open>
+  <summary><b>The current version offers:</b></summary>
+
+1. Face position tracking.
+2. Facial features (eyebrows, eyes and mouth) position tracking.
+3. Cropping a face from the webcam output.
+4. Cropping facial features.
+  
+</details>
+
+<details>
+<summary><b>Future features:</b></summary>
+
+1. Get a measurement of eyes and mouth amplitude.
+2. Get a measurement of eyebrows height
+3. Much more...
+  
+</details>
 
 # Usage
 
@@ -56,41 +70,59 @@ First of all you'll need to import the class into your project.
 
 To make use of the Face class you just need to create an object of the Face class and call *Process()* every frame. See [methods]() for more info.
 
-##
+
 ```processing
 FaceController fc;
 
 void setup() {
   size(640, 480);
   fc = new FaceController(this, "Camera Name");
+  //You can also call process() inside setup();
 }
 
 void draw() {  
-  fc.Process();
-  fc.GetCrop(width/2,height/2);
+  background(0);
+  fc.process();
+  PImage faceImg = fc.getFaceCrop();
+  image(faceImg, width/2 - faceImg.width/2, height/2 - faceImg.height/2, faceImg.width, faceImg.height);
 }
 ```
+<p align="center">
+ <i>An example of how to draw a face crop in the middle of the canvas.</i>
+</p>
+
+Check out more [examples]().
 
 
 # Methods
 
 | Method | Type        | Description                                              | Parameters           |
 | ------ | ----------- | -------------------------------------------------------- | -------------------- |
-| FaceController   | Constructor | Defines the face object | **PApplet parent** (normally *this*), **String camera_name** |
-| FaceController (overloaded)   | Constructor | Defines the face object | **PApplet parent** (normally *this*), **String camera_name**, **float offset** (x4) (upper, lower, left and right *offsets* of the face) |
-| process | Void | Updates face variables using camera's output |
-| process (overloaded) | Void | Updates face variables using camera's output | **boolean debug** (shows the whole camera output along with facial points) |
-| getFace | RealFace | Returns the reference of the raw face object used in FaceController |
-| getLeftEyebrow | RealEyebrow | Returns the reference of the left eyebrow object |
-| getRightEyebrow | RealEyebrow | Returns the reference of the right eyebrow object |
-| getLeftEye | RealEyebrow | Returns the reference of the left eye object |
-| getRightEye | RealEyebrow | Returns the reference of the right eye object |
-| getMouth | RealEyebrow | Returns the reference of the mouth object |
-| getDistance | float | Returns an approximate distance between the camera and the face of the user |
+| FaceController   | Constructor | Defines the face object | <ul><li>PApplet parent (normally *this*)</li><li>String camera</li></ul> |
+| FaceController (overloaded)  | Constructor | Defines the face object | <ul><li>PApplet parent (normally *this*)</li><li>String camera</li><li>float size</li></ul> |
+| FaceController (overloaded)   | Constructor | Defines the face object | <ul><li>PApplet parent (normally *this*)</li><li>String camera</li><li>float size</li><li>float upperOffset</li><li>float lowerOffset</li><li>float leftOffset</li><li>float rightOffset</li></ul> |
+| process | boolean | Updates face variables using camera's output. Returns if the camera was available or not. |
+| process (overloaded) | boolean | Updates face variables using camera's output. Returns if the camera was available or not. | boolean debug |
+| getCamScale | float | Returns the scale of the camera |
+| getCamSize | PVector | Returns the original size of the camera |
 | getCenter | PVector | Returns the coordinates of the center of the face |
+| getReference | float | Returns face distance reference |
+| getFace | RealFace | Returns the raw face object used in FaceController |
+| getFaceCrop | PImage | Returns a crop of the face detected in the camera output |
+| getLeftEyebrow | RealEyebrow | Returns the raw left eyebrow object used in FaceController |
+| getRightEyebrow | RealEyebrow | Returns the raw right eyebrow object used in FaceController |
+| getLeftEye | RealEye | Returns the raw left eye object used in FaceController |
+| getLeftEyeCrop | PImage | Returns a crop of the left eye detected in the camera output |
+| getRightEye | RealEye | Returns the raw right eye object used in FaceController |
+| getRightEyeCrop | PImage | Returns a crop of the right eye detected in the camera output |
+| getMouth | RealMouth | Returns the raw mouth object used in FaceController |
+| getMouthCrop | PImage | Returns a crop of the mouth detected in the camera output |
+| print | void | Prints face data |
+<!--| getDistance | float | Returns an approximate distance between the camera and the face of the user |
 | getMouthAmplitude | float (0-1) | Returns mouth's amplitude relative to the size of the face |
-| MouthIsOpen | boolean | Returns true if mouth's amplitude is greater than a certain threshold |
-| GetCrop | void | Crops the face detected in the camera output and pastes it in the desired position | **int x**, **int y** |
+| mouthIsOpen | boolean | Returns true if mouth's amplitude is greater than a certain threshold |-->
+
+
 
 <p align="center">
  GitHub <a href="https://github.com/Chgv99">@Chgv99</a> · Twitter <a href="https://twitter.com/ChgvCode">@ChgvCode</a>
