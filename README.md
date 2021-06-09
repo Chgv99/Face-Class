@@ -77,13 +77,18 @@ FaceController fc;
 void setup() {
   size(640, 480);
   fc = new FaceController(this, "Camera Name");
+  
+  //You can also call process() inside setup();
 }
 
 void draw() {  
-  fc.Process();
-  fc.GetCrop(width/2,height/2);
+  background(0);
+  fc.process();
+  PImage faceImg = fc.getFaceCrop();
+  image(faceImg, width/2, height/2, faceImg.width, faceImg.height);
 }
 ```
+Check out more [examples]().
 
 
 # Methods
@@ -102,9 +107,7 @@ void draw() {
 | getFace | RealFace | Returns the raw face object used in FaceController |
 | getFaceCrop | PImage | Returns a crop of the face detected in the camera output |
 | getLeftEyebrow | RealEyebrow | Returns the raw left eyebrow object used in FaceController |
-| getLeftEyebrowCrop | PImage | Returns a crop of the left eyebrow detected in the camera output |
 | getRightEyebrow | RealEyebrow | Returns the raw right eyebrow object used in FaceController |
-| getRightEyebrowCrop | PImage | Returns a crop of the right eyebrow detected in the camera output |
 | getLeftEye | RealEye | Returns the raw left eye object used in FaceController |
 | getLeftEyeCrop | PImage | Returns a crop of the left eye detected in the camera output |
 | getRightEye | RealEye | Returns the raw right eye object used in FaceController |
