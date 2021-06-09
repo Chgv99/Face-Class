@@ -38,12 +38,26 @@
 
 # Features
 
-You'll be able to receive useful data from your webcam for your project.
+You'll be able to receive useful data easily from your webcam and use it in your own [Processing](https://processing.org/) project.
 
-<!--The current version contains the following features:
-1. Hey
-2.
-3.-->
+<details open>
+  <summary><b>The current version offers:</b></summary>
+
+1. Face position tracking.
+2. Facial features (eyebrows, eyes and mouth) position tracking.
+3. Cropping a face from the webcam output.
+4. Cropping facial features.
+  
+</details>
+
+<details>
+<summary><b>Future features:</b></summary>
+
+1. Get a measurement of eyes and mouth amplitude.
+2. Get a measurement of eyebrows height
+3. Much more...
+  
+</details>
 
 # Usage
 
