@@ -88,10 +88,8 @@ void draw() {
 }
 ```
 <p align="center">
- <i>An example of how to draw a face crop in the middle of the canvas.</i>
+ <i>An example of how to draw a face crop in the middle of the canvas. Check out more <a href="https://github.com/Chgv99/Face-Class/tree/main/Examples">here</a>.</i>
 </p>
-
-Check out more [examples](https://github.com/Chgv99/Face-Class/tree/main/Examples).
 
 
 # Methods
