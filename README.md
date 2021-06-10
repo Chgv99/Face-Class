@@ -68,7 +68,7 @@ First of all you'll need to import the class into your project.
 3. Copy Face-Class-main/face_controller/face.pde next to the main file of your Processing project.
 4. Now you can call the Face class inside your project!
 
-To make use of the Face class you just need to create an object of the Face class and call *Process()* every frame. See [methods]() for more info.
+To make use of the Face class you just need to create an object of the Face class and call *Process()* every frame. See [methods](https://github.com/Chgv99/Face-Class/blob/main/README.md#methods) for more info.
 
 
 ```processing
