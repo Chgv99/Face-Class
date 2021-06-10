@@ -15,7 +15,7 @@
  <img src="https://img.shields.io/badge/Project-WIP-orange"> <img src="https://img.shields.io/badge/Documentation-Outdated-orange">
 </p>
 <p align="center">
- <a href="">Features</a> • <a href="">Usage</a>
+ <a href="https://github.com/Chgv99/Face-Class/blob/main/README.md#features">Features</a> • <a href="https://github.com/Chgv99/Face-Class/blob/main/README.md#usage">Usage</a> • <a href="https://github.com/Chgv99/Face-Class/blob/main/README.md#methods">Methods</a>
 </p>
 
 <!--<p align="center">
