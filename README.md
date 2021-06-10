@@ -98,9 +98,9 @@ Check out more [examples](https://github.com/Chgv99/Face-Class/tree/main/Example
 
 | Method | Type        | Description                                              | Parameters           |
 | ------ | ----------- | -------------------------------------------------------- | -------------------- |
-| FaceController   | Constructor | Defines the face object | <ul><li>PApplet parent (normally *this*)</li><li>String camera</li></ul> |
-| FaceController (overloaded)  | Constructor | Defines the face object | <ul><li>PApplet parent (normally *this*)</li><li>String camera</li><li>float size</li></ul> |
-| FaceController (overloaded)   | Constructor | Defines the face object | <ul><li>PApplet parent (normally *this*)</li><li>String camera</li><li>float size</li><li>float upperOffset</li><li>float lowerOffset</li><li>float leftOffset</li><li>float rightOffset</li></ul> |
+| FaceController   | Constructor | Initializes face and facial features objects and loads *face_landmark_model.dat* and *haarcascade_frontalface_default.xml* | <ul><li>PApplet parent (normally *this*)</li><li>String camera</li></ul> |
+| FaceController (overloaded)  | Constructor | Initializes face and facial features objects and loads *face_landmark_model.dat* and *haarcascade_frontalface_default.xml* | <ul><li>PApplet parent (normally *this*)</li><li>String camera</li><li>float size</li></ul> |
+| FaceController (overloaded)   | Constructor | Initializes face and facial features objects and loads *face_landmark_model.dat* and *haarcascade_frontalface_default.xml* | <ul><li>PApplet parent (normally *this*)</li><li>String camera</li><li>float size</li><li>float upperOffset</li><li>float lowerOffset</li><li>float leftOffset</li><li>float rightOffset</li></ul> |
 | process | boolean | Updates face variables using camera's output. Returns if the camera was available or not. |
 | process (overloaded) | boolean | Updates face variables using camera's output. Returns if the camera was available or not. | boolean debug |
 | getCamScale | float | Returns the scale of the camera |
