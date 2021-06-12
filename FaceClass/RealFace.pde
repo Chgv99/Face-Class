@@ -48,22 +48,33 @@ class RealFace extends FShape{
     return faceCopy;
   }
   
-  public void print(){
-    println("Face: ", this);
+  private void printContour(PVector[] contour){
     if (contour != null) {
       println("Contour: ");
       for (PVector p : contour){
-        println(p.x + ", " + p.y);
+        print("[" + nf(p.x,0,2) + " " + nf(p.y,0,2) + "]  ");
       }
-    } else {
-      println("Contour: null");
-    }
-    if (leftEyebrow != null && rightEyebrow != null) println("Eyebrows: " + leftEyebrow + ", " + rightEyebrow);
-    else println("Eyebrows: null");
-    if (leftEye != null && rightEye != null) println("Eye: " + leftEye + ", " + rightEye);
-    else println("Eyes: null");
-    if (mouth != null) println("Mouth: " + mouth);
-    else println("Mouth: null");
+      println("");
+    } else println("Contour: null");
+  }
+  
+  public void printData(){
+    println("\n-----FACE-----");
+    println(this);
+    printContour(contour);
+    println("----EYEBROWS-----");
+    println("Left Eyebrow: " + leftEyebrow);
+    printContour(leftEyebrow.getContour());
+    println("Right Eyebrow: " + rightEyebrow);
+    printContour(rightEyebrow.getContour());
+    println("----EYES-----");
+    println("Left Eye: " + leftEye);
+    printContour(leftEye.getContour());
+    println("Right Eye: " + rightEye);
+    printContour(rightEye.getContour());
+    println("----MOUTH-----");
+    println(mouth);
+    printContour(mouth.getContour());
     /*if (chin != null) println("Chin: " + chin);
     else println("Chin: null");*/
   }

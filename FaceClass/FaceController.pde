@@ -1,16 +1,8 @@
 /** TODO
   * REVISAR MÉTODOS DEL README UNO A UNO Y COMPROBAR QUE FUNCIONAN A LA PERFECCIÓN
-  * Devolver coordenadas de los elementos faciales (boca, cejas)
-  * Para ello deberá usarse una coordenada relativa al
-  * centro de la cara (center), para mayor facilidad de uso.
   * Extraer el concepto de DEBUG de esta clase (se está usando
   * un booleano de la clase superior).
-  * Introducir métodos SetNatural...() para modificar
-  * valores naturales.
-  * No se detecta bien el levantamiento de ceja.
-  * Asegurar enlaces del readme.
   * Documentar clases nuevas.
-  * Devolver información acerca de las cejas.
   **/
 
 import processing.video.*;
@@ -345,8 +337,8 @@ class FaceController{
     for (int i = 26; i >= 17; i--){
       float forehead_factor = 0;
       if (getFace().getReference() != -1) {
-        println("no -1");
-        println(getFace().getReference());
+        //println("no -1");
+        //println(getFace().getReference());
         forehead_factor = getFace().getReference() * upperOffset;
       }
       contour[17+26-i] = new PVector((float)p[i].x+o.x, (float)p[i].y+o.y - forehead_factor);
@@ -409,7 +401,7 @@ class FaceController{
   }
   
   public void print(){
-    face.print();
+    face.printData();
   }
   
   private void lookForCameras(PApplet parent, String cameraName, int cameraIndex, int sizeX, int sizeY){
