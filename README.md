@@ -15,7 +15,7 @@
  <img src="https://img.shields.io/badge/Project-WIP-orange"> <img src="https://img.shields.io/badge/Documentation-Outdated-orange">
 </p>
 <p align="center">
- <a href="">Features</a> • <a href="">Usage</a>
+ <a href="https://github.com/Chgv99/Face-Class/blob/main/README.md#features">Features</a> • <a href="https://github.com/Chgv99/Face-Class/blob/main/README.md#usage">Usage</a> • <a href="https://github.com/Chgv99/Face-Class/blob/main/README.md#methods">Methods</a>
 </p>
 
 <!--<p align="center">
@@ -68,7 +68,7 @@ First of all you'll need to import the class into your project.
 3. Copy Face-Class-main/face_controller/face.pde next to the main file of your Processing project.
 4. Now you can call the Face class inside your project!
 
-To make use of the Face class you just need to create an object of the Face class and call *Process()* every frame. See [methods]() for more info.
+To make use of the Face class you just need to create an object of the Face class and call *Process()* every frame. See [methods](https://github.com/Chgv99/Face-Class/blob/main/README.md#methods) for more info.
 
 
 ```processing
@@ -88,10 +88,8 @@ void draw() {
 }
 ```
 <p align="center">
- <i>An example of how to draw a face crop in the middle of the canvas.</i>
+ <i>An example of how to draw a face crop in the middle of the canvas. Check out more <a href="https://github.com/Chgv99/Face-Class/tree/main/Examples">here</a>.</i>
 </p>
-
-Check out more [examples](https://github.com/Chgv99/Face-Class/tree/main/Examples).
 
 
 # Methods
