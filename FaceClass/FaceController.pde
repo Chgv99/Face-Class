@@ -517,7 +517,7 @@ class FaceController{
   public RealFace copyFace(){
     //println("Cropping for copy: " + getCrop());
     //println("copyFace face reference: " + face);
-    return face.copy(getFaceCrop(), (int)camSize.x, (int)camSize.y);
+    return face.copy(/*getFaceCrop()*/img, (int)camSize.x, (int)camSize.y);
   }
   
   public RealEyebrow getLeftEyebrow(){
